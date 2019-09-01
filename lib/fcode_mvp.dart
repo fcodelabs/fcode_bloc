@@ -1,7 +1,7 @@
 library fcode_mvp;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'db/firebase_repository.dart';
+export 'db/specification.dart';
+export 'db/db_model.dart';
+
+export 'bloc/bloc.dart';

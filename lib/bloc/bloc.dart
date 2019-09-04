@@ -6,13 +6,13 @@ abstract class BLoC<Action, State extends UIModel> {
   final _log = Log("BLoC");
   final _inHook = Hook<Action>();
   final _outHook = Hook<State>();
-  State _state;
+  State currentState;
 
   BLoC() {
-    _state = initState;
+    currentState = initState;
     _inHook.stream.listen((action) {
-      _state = mapActionToState(action, _state.clone());
-      _outHook.add(_state);
+      currentState = mapActionToState(action, currentState.clone());
+      _outHook.add(currentState);
     });
   }
 

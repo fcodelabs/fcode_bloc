@@ -20,7 +20,7 @@ class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends Statele
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<B>(context);
-    S _state = bloc.initState;
+    S _state = bloc.currentState;
 
     final streamTransformer = StreamTransformer<S, S>.fromHandlers(
       handleData: (data, sink) {

@@ -1,16 +1,18 @@
 import 'package:fcode_mvp/bloc/hook.dart';
 import 'package:fcode_mvp/bloc/ui_model.dart';
+import 'package:fcode_mvp/log/log.dart';
 
 abstract class BLoC<Action, State extends UIModel> {
+  final _log = Log("BLoC");
   final _inHook = Hook<Action>();
   final _outHook = Hook<State>();
-  State state;
+  State _state;
 
   BLoC() {
-    state = initState;
+    _state = initState;
     _inHook.stream.listen((action) {
-      state = mapActionToState(action);
-      _outHook.add(state);
+      _state = mapActionToState(action, _state.clone());
+      _outHook.add(_state);
     });
   }
 
@@ -19,7 +21,7 @@ abstract class BLoC<Action, State extends UIModel> {
     _outHook.dispose();
   }
 
-  State mapActionToState(Action action);
+  State mapActionToState(Action action, State preState);
 
   State get initState;
 

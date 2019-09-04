@@ -1,1 +1,3 @@
-abstract class UIModel {}
+abstract class UIModel {
+  UIModel clone();
+}

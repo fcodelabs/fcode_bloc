@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:fcode_mvp/bloc/bloc.dart';
 import 'package:fcode_mvp/bloc/bloc_provider.dart';
 import 'package:fcode_mvp/bloc/ui_model.dart';
+import 'package:fcode_mvp/log/log.dart';
 import 'package:flutter/cupertino.dart';
 
 class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends StatelessWidget {
+  final _log = Log("BlocBuilder");
   final Function(BuildContext, S) builder;
   final bool Function(S previous, S current) condition;
 
@@ -33,7 +35,7 @@ class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends Statele
     );
 
     return StreamBuilder<S>(
-      initialData: bloc.initState,
+      initialData: _state,
       stream: bloc.stream.transform(streamTransformer),
       builder: (context, snapshot) {
         if (snapshot.hasError) {

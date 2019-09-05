@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fcode_mvp/bloc/bloc.dart';
 import 'package:fcode_mvp/bloc/bloc_provider.dart';
+import 'package:fcode_mvp/bloc/default_stream_transformer.dart';
 import 'package:fcode_mvp/bloc/ui_model.dart';
 import 'package:fcode_mvp/log/log.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +23,7 @@ class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends Statele
     final bloc = BlocProvider.of<B>(context);
     S _state = bloc.currentState;
 
-    final streamTransformer = StreamTransformer<S, S>.fromHandlers(
+    final streamTransformer = DefaultStreamTransformer.transformer<S, S>(
       handleData: (data, sink) {
         final preState = _state;
         _state = data;
@@ -30,8 +31,6 @@ class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends Statele
           sink.add(data);
         }
       },
-      handleError: (error, stackTrace, sink) => sink.addError(error, stackTrace),
-      handleDone: (sink) => sink.close(),
     );
 
     return StreamBuilder<S>(

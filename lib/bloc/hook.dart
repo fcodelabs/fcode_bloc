@@ -11,6 +11,14 @@ class Hook<T> {
     return _controller.stream;
   }
 
+  StreamSink<T> get sink {
+    return _controller.sink;
+  }
+
+  void pipe(Hook<T> hook) {
+    stream.pipe(hook.sink);
+  }
+
   void dispose() {
     _controller.close();
   }

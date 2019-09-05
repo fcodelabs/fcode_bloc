@@ -7,12 +7,16 @@ abstract class BLoC<Action, State extends UIModel> {
   final _inHook = Hook<Action>();
   final _outHook = Hook<State>();
   State currentState;
+  Action currentAction;
 
   BLoC() {
     currentState = initState;
-    _inHook.stream.listen((action) {
-      currentState = mapActionToState(action, currentState.clone());
-      _outHook.add(currentState);
+    _inHook.stream.asyncExpand((action) {
+      currentAction = action;
+      return mapActionToState(action);
+    }).forEach((state) {
+      currentState = state;
+      _outHook.add(state);
     });
   }
 
@@ -21,7 +25,7 @@ abstract class BLoC<Action, State extends UIModel> {
     _outHook.dispose();
   }
 
-  State mapActionToState(Action action, State preState);
+  Stream<State> mapActionToState(Action action);
 
   State get initState;
 

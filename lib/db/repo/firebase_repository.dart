@@ -24,19 +24,12 @@ abstract class FirebaseRepository<T extends DBModel> {
     }
   }
 
-  Future<List<T>> query(SpecificationI specification) async {
-//    final firebaseSpecification = specification as FirebaseSpecification;
-//    final List<DocumentSnapshot> snapshots =
-//    await firebaseSpecification.specify(parent.collection(DBUtils.TEST));
-//    final List<Test> tests = [];
-//    for (final snapshot in snapshots) {
-//      final test = fromSnapshot(snapshot);
-//      if (test == null) {
-//        continue;
-//      }
-//      tests.add(test);
-//    }
-//    return tests;
+  Stream<T> query({@required SpecificationI specification, @required String type, DocumentReference parent}) async* {
+    parent = parent ?? Firestore.instance;
+    final stream = specification.specify(parent.collection(type));
+    await for (final snapshot in stream) {
+      yield fromSnapshot(snapshot);
+    }
   }
 
   Future<void> remove(T item) async {

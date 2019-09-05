@@ -1,6 +1,7 @@
 import 'dart:async';
 
 class Hook<T> {
+  // ToDo: Remove hook and use RxDart package
   final _controller = StreamController<T>.broadcast();
 
   void add(T state) {

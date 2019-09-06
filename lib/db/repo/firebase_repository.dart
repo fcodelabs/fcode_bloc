@@ -9,11 +9,14 @@ abstract class FirebaseRepository<T extends DBModel> {
 
   Map<String, dynamic> toMap(T item);
 
+  CollectionReference _merge(String type, DocumentReference parent) {
+    return parent?.collection(type) ?? Firestore.instance.collection(type);
+  }
+
   Future<void> add({@required T item, @required String type, DocumentReference parent}) async {
-    parent = parent ?? Firestore.instance;
     final data = toMap(item);
     if (item.ref == null) {
-      item.ref = parent.collection(type).document();
+      item.ref = _merge(type, parent).document();
     }
     item.ref.setData(data);
   }
@@ -24,15 +27,14 @@ abstract class FirebaseRepository<T extends DBModel> {
     }
   }
 
-  Stream<T> query({@required SpecificationI specification, @required String type, DocumentReference parent}) async* {
-    parent = parent ?? Firestore.instance;
-    final stream = specification.specify(parent.collection(type));
-    await for (final snapshot in stream) {
-      final item = fromSnapshot(snapshot);
+  Stream<T> query({@required SpecificationI specification, @required String type, DocumentReference parent}) {
+    final stream = specification.specify(_merge(type, parent));
+    return stream.transform(DefaultStreamTransformer.transformer(handleData: (data, sink) {
+      final item = fromSnapshot(data);
       if (item != null) {
-        yield item;
+        sink.add(item);
       }
-    }
+    }));
   }
 
   Future<void> remove(T item) async {

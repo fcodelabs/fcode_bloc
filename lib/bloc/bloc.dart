@@ -40,9 +40,7 @@ abstract class BLoC<Action, S extends UIModel> {
   }
 
   void addListener({@required String name, @required BlocListener<S> listener}) {
-    if (_subscriptions.containsKey(name)) {
-      _subscriptions[name].cancel();
-    }
+    removeListener(name: name);
     // ignore: cancel_subscriptions
     final subscription = _outHook.stream.listen((data) {
       final snapshot = BlocSnapshot<S>.fromData(data);
@@ -54,8 +52,18 @@ abstract class BLoC<Action, S extends UIModel> {
       },
       cancelOnError: false,
     );
+    Future.microtask(() {
+      final snapshot = BlocSnapshot<S>.fromData(currentState);
+      listener(snapshot);
+    });
     _listeners[name] = listener;
     _subscriptions[name] = subscription;
+  }
+
+  void removeListener({@required String name}) {
+    if (_subscriptions.containsKey(name)) {
+      _subscriptions[name].cancel();
+    }
   }
 
   Stream<S> mapActionToState(Action action);

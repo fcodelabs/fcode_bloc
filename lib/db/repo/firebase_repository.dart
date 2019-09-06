@@ -28,7 +28,10 @@ abstract class FirebaseRepository<T extends DBModel> {
     parent = parent ?? Firestore.instance;
     final stream = specification.specify(parent.collection(type));
     await for (final snapshot in stream) {
-      yield fromSnapshot(snapshot);
+      final item = fromSnapshot(snapshot);
+      if (item != null) {
+        yield item;
+      }
     }
   }
 

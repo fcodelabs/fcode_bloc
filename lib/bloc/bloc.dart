@@ -52,10 +52,6 @@ abstract class BLoC<Action, S extends UIModel> {
       },
       cancelOnError: false,
     );
-    Future.microtask(() {
-      final snapshot = BlocSnapshot<S>.fromData(currentState);
-      listener(snapshot);
-    });
     _listeners[name] = listener;
     _subscriptions[name] = subscription;
   }

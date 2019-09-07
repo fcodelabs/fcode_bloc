@@ -1,8 +1,10 @@
 import 'package:fcode_mvp/bloc/bloc.dart';
+import 'package:fcode_mvp/log/log.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BlocProvider<Bloc extends BLoC<dynamic, dynamic>> extends Provider<Bloc> {
+  final _log = Log("BlocProvider");
   BlocProvider({
     Key key,
     @required ValueBuilder<Bloc> builder,

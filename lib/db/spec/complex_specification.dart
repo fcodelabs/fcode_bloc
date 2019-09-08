@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_mvp/bloc/default_stream_transformer.dart';
 import 'package:fcode_mvp/db/specification.dart';
 
 class ComplexSpecification implements SpecificationI {
@@ -10,21 +9,15 @@ class ComplexSpecification implements SpecificationI {
   ComplexSpecification(this._complexWhere);
 
   @override
-  Stream<DocumentSnapshot> specify(CollectionReference collection) {
+  Stream<QuerySnapshot> specify(CollectionReference collection) {
     if (_complexWhere == null) {
-      return Stream<DocumentSnapshot>.empty();
+      return Stream<QuerySnapshot>.empty();
     }
     Query query = collection;
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return query.snapshots().transform(DefaultStreamTransformer.transformer<QuerySnapshot, DocumentSnapshot>(
-      handleData: (data, sink) {
-        for (final document in data.documents) {
-          sink.add(document);
-        }
-      },
-    ));
+    return query.snapshots();
   }
 }
 

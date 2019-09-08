@@ -27,13 +27,18 @@ abstract class FirebaseRepository<T extends DBModel> {
     }
   }
 
-  Stream<T> query({@required SpecificationI specification, @required String type, DocumentReference parent}) {
+  Stream<List<T>> query({@required SpecificationI specification, @required String type, DocumentReference parent}) {
     final stream = specification.specify(_merge(type, parent));
-    return stream.transform(DefaultStreamTransformer.transformer(handleData: (data, sink) {
-      final item = fromSnapshot(data);
-      if (item != null) {
-        sink.add(item);
+    return stream.transform(DefaultStreamTransformer.transformer<QuerySnapshot, List<T>>(handleData: (data, sink) {
+      final documents = data.documents;
+      final items = <T>[];
+      for (final document in documents) {
+        final item = fromSnapshot(document);
+        if (item != null) {
+          items.add(item);
+        }
       }
+      sink.add(items);
     }));
   }
 

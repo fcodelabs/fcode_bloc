@@ -42,10 +42,11 @@ abstract class BLoC<Action, S extends UIModel> {
   void addListener({@required String name, @required BlocListener<S> listener}) {
     removeListener(name: name);
     // ignore: cancel_subscriptions
-    final subscription = _outHook.stream.listen((data) {
-      final snapshot = BlocSnapshot<S>.fromData(data);
-      listener(snapshot);
-    },
+    final subscription = _outHook.stream.listen(
+      (data) {
+        final snapshot = BlocSnapshot<S>.fromData(data);
+        listener(snapshot);
+      },
       onError: (error, [stacktrace]) {
         final snapshot = BlocSnapshot<S>.fromError(error, stacktrace);
         listener(snapshot);

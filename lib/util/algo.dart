@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
 import 'package:crypto/crypto.dart';
+import 'package:device_info/device_info.dart';
 import 'package:fcode_mvp/log/log.dart';
 import 'package:flutter/services.dart';
 
@@ -48,5 +48,4 @@ abstract class Algo {
     }
     return _deviceID;
   }
-
 }

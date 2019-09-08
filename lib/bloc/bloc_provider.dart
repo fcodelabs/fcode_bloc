@@ -5,26 +5,27 @@ import 'package:provider/provider.dart';
 
 class BlocProvider<Bloc extends BLoC<dynamic, dynamic>> extends Provider<Bloc> {
   final _log = Log("BlocProvider");
+
   BlocProvider({
     Key key,
     @required ValueBuilder<Bloc> builder,
     Widget child,
   }) : super(
-    key: key,
-    builder: builder,
-    dispose: (_, bloc) => bloc?.dispose(),
-    child: child,
-  );
+          key: key,
+          builder: builder,
+          dispose: (_, bloc) => bloc?.dispose(),
+          child: child,
+        );
 
   BlocProvider.value({
     Key key,
     @required Bloc value,
     Widget child,
   }) : super.value(
-    key: key,
-    value: value,
-    child: child,
-  );
+          key: key,
+          value: value,
+          child: child,
+        );
 
   static T of<T extends BLoC<dynamic, dynamic>>(BuildContext context) {
     try {
@@ -48,4 +49,3 @@ class BlocProvider<Bloc extends BLoC<dynamic, dynamic>> extends Provider<Bloc> {
     }
   }
 }
-

@@ -4,7 +4,6 @@ import 'package:fcode_mvp/fcode_mvp.dart';
 import 'package:flutter/material.dart';
 
 abstract class FirebaseRepository<T extends DBModel> {
-
   T fromSnapshot(DocumentSnapshot snapshot);
 
   Map<String, dynamic> toMap(T item);
@@ -58,4 +57,3 @@ abstract class FirebaseRepository<T extends DBModel> {
     return item.ref.updateData(data);
   }
 }
-

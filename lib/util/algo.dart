@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
-import 'package:fcode_mvp/log/log.dart';
+import 'package:fcode_bloc/log/log.dart';
 import 'package:flutter/services.dart';
 
 abstract class Algo {

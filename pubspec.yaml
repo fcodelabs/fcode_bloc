@@ -1,6 +1,6 @@
-name: fcode_mvp
-description: MVP architecture followed by Fcode Labs
-version: 0.1.4
+name: fcode_bloc
+description: BLOC architecture with Firebase Repository followed by Fcode Labs
+version: 0.2.0
 author: Fcode Labs (PVT) LTD
 homepage: https://www.fcodelabs.com
 

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_mvp/bloc/default_stream_transformer.dart';
-import 'package:fcode_mvp/db/specification.dart';
+import 'package:fcode_bloc/bloc/default_stream_transformer.dart';
+import 'package:fcode_bloc/db/specification.dart';
 
 class ByReferenceSpecification implements SpecificationI {
   final DocumentReference _documentReference;

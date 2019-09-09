@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:fcode_mvp/bloc/bloc_listener.dart';
-import 'package:fcode_mvp/bloc/hook.dart';
-import 'package:fcode_mvp/bloc/ui_model.dart';
-import 'package:fcode_mvp/log/log.dart';
+import 'package:fcode_bloc/bloc/bloc_listener.dart';
+import 'package:fcode_bloc/bloc/hook.dart';
+import 'package:fcode_bloc/bloc/ui_model.dart';
+import 'package:fcode_bloc/log/log.dart';
 import 'package:flutter/material.dart';
 
 abstract class BLoC<Action, S extends UIModel> {

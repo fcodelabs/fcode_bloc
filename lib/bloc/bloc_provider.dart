@@ -1,5 +1,5 @@
-import 'package:fcode_mvp/bloc/bloc.dart';
-import 'package:fcode_mvp/log/log.dart';
+import 'package:fcode_bloc/bloc/bloc.dart';
+import 'package:fcode_bloc/log/log.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

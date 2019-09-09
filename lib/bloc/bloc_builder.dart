@@ -1,9 +1,9 @@
-import 'package:fcode_mvp/bloc/bloc.dart';
-import 'package:fcode_mvp/bloc/bloc_provider.dart';
-import 'package:fcode_mvp/bloc/default_stream_transformer.dart';
-import 'package:fcode_mvp/bloc/ui_model.dart';
-import 'package:fcode_mvp/log/log.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:fcode_bloc/bloc/bloc.dart';
+import 'package:fcode_bloc/bloc/bloc_provider.dart';
+import 'package:fcode_bloc/bloc/default_stream_transformer.dart';
+import 'package:fcode_bloc/bloc/ui_model.dart';
+import 'package:fcode_bloc/log/log.dart';
+import 'package:flutter/material.dart';
 
 class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends StatelessWidget {
   final _log = Log("BlocBuilder");

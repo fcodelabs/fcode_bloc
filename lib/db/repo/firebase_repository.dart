@@ -28,10 +28,9 @@ abstract class FirebaseRepository<T extends DBModel> {
 
   Stream<List<T>> query({@required SpecificationI specification, @required String type, DocumentReference parent}) {
     final stream = specification.specify(_merge(type, parent));
-    return stream.transform(DefaultStreamTransformer.transformer<QuerySnapshot, List<T>>(handleData: (data, sink) {
-      final documents = data.documents;
+    return stream.transform(DefaultStreamTransformer.transformer<List<DocumentSnapshot>, List<T>>(handleData: (data, sink) {
       final items = <T>[];
-      for (final document in documents) {
+      for (final document in data) {
         final item = fromSnapshot(document);
         if (item != null) {
           items.add(item);

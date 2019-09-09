@@ -1,6 +1,6 @@
 name: fcode_bloc
 description: BLOC architecture with Firebase Repository followed by Fcode Labs
-version: 0.2.0
+version: 0.2.1
 author: Fcode Labs (PVT) LTD
 homepage: https://www.fcodelabs.com
 
@@ -17,6 +17,7 @@ dependencies:
   device_info: ^0.4.0+2
   crypto: ^2.1.2
   intl: ^0.15.8
+  rxdart: ^0.22.2
 
 dev_dependencies:
   flutter_test:

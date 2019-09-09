@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:fcode_bloc/bloc/bloc_listener.dart';
-import 'package:fcode_bloc/bloc/hook.dart';
 import 'package:fcode_bloc/bloc/ui_model.dart';
 import 'package:fcode_bloc/log/log.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class BLoC<Action, S extends UIModel> {
   final _log = Log("BLoC");
-  final _inHook = Hook<Action>();
-  final _outHook = Hook<S>();
+  final _inHook = PublishSubject<Action>();
+  final _outHook = BehaviorSubject<S>();
   final _subscriptions = <String, StreamSubscription<S>>{};
   final _listeners = <String, BlocListener<S>>{};
   S currentState;
@@ -17,7 +17,7 @@ abstract class BLoC<Action, S extends UIModel> {
 
   BLoC() {
     currentState = initState;
-    _inHook.stream.asyncExpand((action) {
+    _inHook.asyncExpand((action) {
       currentAction = action;
       return mapActionToState(action).handleError((error, [stacktrace]) {
         _listeners.values.forEach((listener) {
@@ -32,8 +32,8 @@ abstract class BLoC<Action, S extends UIModel> {
   }
 
   void dispose() {
-    _inHook.dispose();
-    _outHook.dispose();
+    _inHook.close();
+    _outHook.close();
     _subscriptions.values.forEach((subscription) {
       subscription.cancel();
     });
@@ -42,7 +42,7 @@ abstract class BLoC<Action, S extends UIModel> {
   void addListener({@required String name, @required BlocListener<S> listener}) {
     removeListener(name: name);
     // ignore: cancel_subscriptions
-    final subscription = _outHook.stream.listen(
+    final subscription = _outHook.listen(
       (data) {
         final snapshot = BlocSnapshot<S>.fromData(data);
         listener(snapshot);
@@ -68,7 +68,7 @@ abstract class BLoC<Action, S extends UIModel> {
   S get initState;
 
   void dispatch(Action action) {
-    _inHook.add(action);
+    _inHook.sink.add(action);
   }
 
   Stream<S> get stream => _outHook.stream;

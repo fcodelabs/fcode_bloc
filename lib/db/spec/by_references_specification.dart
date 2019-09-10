@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fcode_bloc/db/specification.dart';
 import 'package:rxdart/rxdart.dart';
 
+@Deprecated("Use `ReferencesHandler` instead. Will be removed in v1.0.0")
 class ByReferencesSpecification implements SpecificationI {
   final List<DocumentReference> _documentReferences;
 

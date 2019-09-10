@@ -31,6 +31,7 @@ abstract class BLoC<Action, S extends UIModel> {
     });
   }
 
+  @mustCallSuper
   void dispose() {
     _inHook.close();
     _outHook.close();

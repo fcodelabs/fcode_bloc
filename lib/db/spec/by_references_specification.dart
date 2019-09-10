@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fcode_bloc/db/specification.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ByReferencesSpecification implements SpecificationI {
   final List<DocumentReference> _documentReferences;
@@ -9,11 +10,21 @@ class ByReferencesSpecification implements SpecificationI {
   ByReferencesSpecification(this._documentReferences);
 
   @override
-  Stream<List<DocumentSnapshot>> specify(CollectionReference collection) async* {
-    final snapshots = <DocumentSnapshot>[];
-    for (final ref in _documentReferences) {
-      snapshots.add(await ref.get());
+  Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
+    if (_documentReferences.length == 0) {
+      return Stream.empty();
     }
-    yield snapshots;
+    final snapshots = <String, DocumentSnapshot>{};
+    final streams = _documentReferences.map<Stream<List<DocumentSnapshot>>>((ref) {
+      return ref
+          .snapshots()
+          .transform(StreamTransformer<DocumentSnapshot, List<DocumentSnapshot>>.fromHandlers(handleData: (data, sink) {
+        snapshots[data.documentID] = data;
+        final values = snapshots.values;
+        sink.add(values.toList());
+      }));
+    }).toList();
+
+    return MergeStream(streams).asBroadcastStream();
   }
 }

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/bloc/default_stream_transformer.dart';
 import 'package:fcode_bloc/db/db_model.dart';
 import 'package:fcode_bloc/db/specification.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +28,7 @@ abstract class FirebaseRepository<T extends DBModel> {
 
   Stream<List<T>> query({@required SpecificationI specification, @required String type, DocumentReference parent}) {
     final stream = specification.specify(_merge(type, parent));
-    return stream
-        .transform(DefaultStreamTransformer.transformer<List<DocumentSnapshot>, List<T>>(handleData: (data, sink) {
+    return stream.map<List<T>>((data) {
       final items = <T>[];
       for (final document in data) {
         final item = fromSnapshot(document);
@@ -38,8 +36,8 @@ abstract class FirebaseRepository<T extends DBModel> {
           items.add(item);
         }
       }
-      sink.add(items);
-    }));
+      return items;
+    });
   }
 
   Future<void> remove(T item) async {

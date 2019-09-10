@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/bloc/default_stream_transformer.dart';
 import 'package:fcode_bloc/db/specification.dart';
 
 class ComplexSpecification implements SpecificationI {
@@ -18,10 +17,7 @@ class ComplexSpecification implements SpecificationI {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return query.snapshots().transform(
-        DefaultStreamTransformer.transformer<QuerySnapshot, List<DocumentSnapshot>>(handleData: (data, sink) {
-      sink.add(data.documents);
-    }));
+    return query.snapshots().map<List<DocumentSnapshot>>((data) => data.documents);
   }
 }
 

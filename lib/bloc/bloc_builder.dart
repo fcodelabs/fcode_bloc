@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:fcode_bloc/bloc/bloc.dart';
 import 'package:fcode_bloc/bloc/bloc_provider.dart';
-import 'package:fcode_bloc/bloc/default_stream_transformer.dart';
 import 'package:fcode_bloc/bloc/ui_model.dart';
 import 'package:fcode_bloc/log/log.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends Statele
     final bloc = BlocProvider.of<B>(context);
     S _state = bloc.currentState;
 
-    final streamTransformer = DefaultStreamTransformer.transformer<S, S>(
+    final streamTransformer = StreamTransformer<S, S>.fromHandlers(
       handleData: (data, sink) {
         final preState = _state;
         _state = data;

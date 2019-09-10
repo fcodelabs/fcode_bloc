@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/bloc/default_stream_transformer.dart';
 import 'package:fcode_bloc/db/specification.dart';
 
 class ByReferenceSpecification implements SpecificationI {
@@ -11,9 +10,6 @@ class ByReferenceSpecification implements SpecificationI {
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
-    return _documentReference.snapshots().transform(
-        DefaultStreamTransformer.transformer<DocumentSnapshot, List<DocumentSnapshot>>(handleData: (data, sink) {
-      sink.add([data]);
-    }));
+    return _documentReference.snapshots().map<List<DocumentSnapshot>>((data) => [data]);
   }
 }

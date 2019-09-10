@@ -1,0 +1,17 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fcode_bloc/db/specification.dart';
+
+class TextStartWithSpecification extends SpecificationI {
+  final String field;
+  final String containText;
+
+  TextStartWithSpecification(this.field, this.containText);
+
+  @override
+  Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
+    final query = collection.orderBy(field).startAt([containText]).endAt([containText + '\uf8ff']);
+    return query.snapshots().map<List<DocumentSnapshot>>((data) => data.documents);
+  }
+}

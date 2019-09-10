@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:fcode_bloc/bloc/bloc_listener.dart';
 import 'package:fcode_bloc/bloc/ui_model.dart';
 import 'package:fcode_bloc/log/log.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,6 +22,11 @@ abstract class BLoC<Action, S extends UIModel> {
     _inHook.asyncExpand((action) {
       currentAction = action;
       return mapActionToState(action).handleError((error, [stacktrace]) {
+        if (_listeners.length == 0) {
+          _log.e(error.toString());
+          _log.e(stacktrace.toString());
+          return;
+        }
         _listeners.values.forEach((listener) {
           final snapshot = BlocSnapshot<S>.fromError(error, stacktrace);
           listener(snapshot);
@@ -59,9 +66,7 @@ abstract class BLoC<Action, S extends UIModel> {
   }
 
   void removeListener({@required String name}) {
-    if (_subscriptions.containsKey(name)) {
-      _subscriptions[name].cancel();
-    }
+    _subscriptions[name]?.cancel();
   }
 
   Stream<S> mapActionToState(Action action);

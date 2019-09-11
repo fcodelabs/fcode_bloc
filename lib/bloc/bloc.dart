@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:fcode_bloc/bloc/bloc_listener.dart';
+import 'package:fcode_bloc/bloc/bloc_provider.dart';
 import 'package:fcode_bloc/bloc/ui_model.dart';
 import 'package:fcode_bloc/log/log.dart';
 import 'package:flutter/foundation.dart';
@@ -12,61 +12,84 @@ abstract class BLoC<Action, S extends UIModel> {
   final _log = Log("BLoC");
   final _inHook = PublishSubject<Action>();
   final _outHook = BehaviorSubject<S>();
-  final _subscriptions = <String, StreamSubscription<S>>{};
-  final _listeners = <String, BlocListener<S>>{};
+  final _listeners = <String, BlocListener<Action, S>>{};
+
+  Iterable<BlocListener<Action, S>> _listenersList = [];
   S currentState;
   Action currentAction;
 
   BLoC() {
     currentState = initState;
+    _outHook.add(currentState);
+
+    // Every action listener
     _inHook.asyncExpand((action) {
+      // Call action change in every listener
+      _listenersList.forEach((listener) {
+        final snapshot = BlocSnapshot<Action, S>.fromAction(action, currentAction);
+        listener(snapshot);
+      });
       currentAction = action;
+
+      // Map actions to states
       return mapActionToState(action).handleError((error, [stacktrace]) {
-        if (_listeners.length == 0) {
+        // If there were errors during `mapActionToState` execution,
+        // handle them with listeners or print the log
+        if (_listenersList.length == 0) {
           _log.e(error.toString());
           _log.e(stacktrace.toString());
-          return;
+        } else {
+          raiseError(error, stacktrace);
         }
-        _listeners.values.forEach((listener) {
-          final snapshot = BlocSnapshot<S>.fromError(error, stacktrace);
-          listener(snapshot);
-        });
       });
     }).forEach((state) {
-      currentState = state;
-      _outHook.add(state);
+      raiseStateChange(state);
     });
   }
 
+  /// Release the resources. This is called automatically if used with default constructor
+  /// of [BlocProvider]. If [BlocProvider.value(value: foo)] is used, this function has to be
+  /// called manually as `foo.dispose`.
   @mustCallSuper
   void dispose() {
     _inHook.close();
     _outHook.close();
-    _subscriptions.values.forEach((subscription) {
-      subscription.cancel();
+  }
+
+  /// Call this function to raise an error event in all the listeners.
+  @protected
+  void raiseError(error, [stacktrace]) {
+    _listenersList.forEach((listener) {
+      final snapshot = BlocSnapshot<Action, S>.fromError(error, stacktrace);
+      listener(snapshot);
     });
   }
 
-  void addListener({@required String name, @required BlocListener<S> listener}) {
-    removeListener(name: name);
-    // ignore: cancel_subscriptions
-    final subscription = _outHook.listen(
-      (data) {
-        final snapshot = BlocSnapshot<S>.fromData(data);
-        listener(snapshot);
-      },
-      onError: (error, [stacktrace]) {
-        final snapshot = BlocSnapshot<S>.fromError(error, stacktrace);
-        listener(snapshot);
-      },
-      cancelOnError: false,
-    );
+  /// Call this method to raise and StateChange event in all the listeners
+  /// and to add the new state to the Bloc Stream
+  @protected
+  void raiseStateChange(S state) {
+    // Call state change in every listener
+    _listenersList.forEach((listener) {
+      final snapshot = BlocSnapshot<Action, S>.fromData(state, currentState);
+      listener(snapshot);
+    });
+    currentState = state;
+
+    // Send new state through stream
+    _outHook.add(state);
+  }
+
+  void addListener({@required String name, @required BlocListener<Action, S> listener}) {
     _listeners[name] = listener;
-    _subscriptions[name] = subscription;
+    _listenersList = _listeners.values;
   }
 
   void removeListener({@required String name}) {
-    _subscriptions[name]?.cancel();
+    if (_listeners.containsKey(name)) {
+      _listeners.remove(name);
+      _listenersList = _listeners.values;
+    }
   }
 
   Stream<S> mapActionToState(Action action);

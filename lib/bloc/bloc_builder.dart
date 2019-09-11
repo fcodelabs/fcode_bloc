@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends StatelessWidget {
   final _log = Log("BlocBuilder");
-  final Function(BuildContext, S) builder;
+  final Widget Function(BuildContext, S) builder;
   final bool Function(S previous, S current) condition;
 
   BlocBuilder({

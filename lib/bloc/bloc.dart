@@ -13,6 +13,7 @@ abstract class BLoC<Action, S extends UIModel> {
   final _inHook = PublishSubject<Action>();
   final _outHook = BehaviorSubject<S>();
   final _listeners = <String, BlocListener<Action, S>>{};
+  final _globalBlocCollector = _GlobalBlocCollector();
 
   Iterable<BlocListener<Action, S>> _listenersList = [];
   S currentState;
@@ -45,6 +46,7 @@ abstract class BLoC<Action, S extends UIModel> {
     }).forEach((state) {
       raiseStateChange(state);
     });
+    _globalBlocCollector.add(this);
   }
 
   /// Release the resources. This is called automatically if used with default constructor
@@ -54,6 +56,7 @@ abstract class BLoC<Action, S extends UIModel> {
   void dispose() {
     _inHook.close();
     _outHook.close();
+    _globalBlocCollector.remove(this);
   }
 
   /// Call this function to raise an error event in all the listeners.
@@ -100,5 +103,36 @@ abstract class BLoC<Action, S extends UIModel> {
     _inHook.sink.add(action);
   }
 
+  @protected
+  void dispatchGlobally<B extends BLoC<A, dynamic>, A>(A a) {
+    _globalBlocCollector.dispatchGlobally<B, A>(a);
+  }
+
   Stream<S> get stream => _outHook.stream;
+}
+
+class _GlobalBlocCollector {
+  static _GlobalBlocCollector __globalBlocCollector;
+  final _collection = <String, BLoC>{};
+
+  factory _GlobalBlocCollector() {
+    if (__globalBlocCollector == null) {
+      __globalBlocCollector = _GlobalBlocCollector._();
+    }
+    return __globalBlocCollector;
+  }
+
+  _GlobalBlocCollector._();
+
+  void add(BLoC bloc) {
+    _collection[bloc.runtimeType.toString()] = bloc;
+  }
+
+  void remove(BLoC bloc) {
+    _collection.remove(bloc.runtimeType.toString());
+  }
+
+  void dispatchGlobally<B extends BLoC<A, dynamic>, A>(A a) {
+    _collection[B.toString()].dispatch(a);
+  }
 }

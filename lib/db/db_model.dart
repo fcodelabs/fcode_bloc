@@ -20,5 +20,4 @@ abstract class DBModel {
   String toString() {
     return "Reference: " + ref.path;
   }
-
 }

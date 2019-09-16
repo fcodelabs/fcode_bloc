@@ -14,8 +14,14 @@ abstract class Algo {
   Algo._();
 
   static String toTitleCase(final String text) {
-    List<String> words = text.split(" ");
+    if (text == null) {
+      return "";
+    }
+    List<String> words = text.toLowerCase().split(" ");
     words = words.map((word) {
+      if (word.isEmpty) {
+        return "";
+      }
       return word[0].toUpperCase() + word.substring(1);
     }).toList();
     return words.join(" ");

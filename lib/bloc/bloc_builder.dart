@@ -25,8 +25,9 @@ class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends Statele
     final streamTransformer = StreamTransformer<S, S>.fromHandlers(
       handleData: (data, sink) {
         final preState = _state;
-        _state = data;
-        if (condition?.call(preState, _state) ?? true) {
+        final currentState = data;
+        if (condition?.call(preState, currentState) ?? true) {
+          _state = data;
           sink.add(data);
         }
       },

@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 abstract class DBModel {
   DocumentReference ref;
 
+  DBModel({this.ref});
+
   @override
   bool operator ==(other) {
     if (other is DBModel) {
@@ -19,5 +21,9 @@ abstract class DBModel {
   @override
   String toString() {
     return "Reference: " + ref.path;
+  }
+
+  DBModel clone() {
+    return this;
   }
 }

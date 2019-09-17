@@ -25,11 +25,6 @@ abstract class BLoC<Action, S extends UIModel> {
 
     // Every action listener
     _inHook.asyncExpand((action) {
-      // Call action change in every listener
-      _listenersList.forEach((listener) {
-        final snapshot = BlocSnapshot<Action, S>.fromAction(action, currentAction);
-        listener(snapshot);
-      });
       currentAction = action;
 
       // Map actions to states
@@ -100,6 +95,10 @@ abstract class BLoC<Action, S extends UIModel> {
   S get initState;
 
   void dispatch(Action action) {
+    _listenersList.forEach((listener) {
+      final snapshot = BlocSnapshot<Action, S>.fromAction(action);
+      listener(snapshot);
+    });
     _inHook.sink.add(action);
   }
 

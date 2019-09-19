@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/db/db_model.dart';
-import 'package:fcode_bloc/db/reference_handler.dart';
-import 'package:fcode_bloc/db/repo/firebase_repository.dart';
+import 'package:fcode_bloc/src/db/db_model.dart';
+import 'package:fcode_bloc/src/db/reference_handler.dart';
+import 'package:fcode_bloc/src/db/repo/firebase_repository.dart';
 import 'package:flutter/material.dart';
 
 class ReferencesHandler<T extends DBModel> {

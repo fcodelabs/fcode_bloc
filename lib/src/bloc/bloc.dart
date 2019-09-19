@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:fcode_bloc/bloc/bloc_listener.dart';
-import 'package:fcode_bloc/bloc/bloc_provider.dart';
-import 'package:fcode_bloc/bloc/ui_model.dart';
-import 'package:fcode_bloc/log/log.dart';
+import 'package:fcode_bloc/src/bloc/bloc_listener.dart';
+import 'package:fcode_bloc/src/bloc/bloc_provider.dart';
+import 'package:fcode_bloc/src/bloc/ui_model.dart';
+import 'package:fcode_bloc/src/log/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -30,7 +30,7 @@ abstract class BLoC<Action, S extends UIModel> {
       // Map actions to states
       return mapActionToState(action).handleError((error, [stacktrace]) {
         // If there were errors during `mapActionToState` execution,
-        // handle them with listeners or print the log
+        // handle them with listeners or print the src.log
         if (_listenersList.length == 0) {
           _log.e(error.toString());
           _log.e(stacktrace.toString());

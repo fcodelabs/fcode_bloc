@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/db/specification.dart';
+import 'package:fcode_bloc/src/db/specification.dart';
 
 class ComplexSpecification implements SpecificationI {
   List<ComplexOperation> _complexWhere;

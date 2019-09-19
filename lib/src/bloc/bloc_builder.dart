@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:fcode_bloc/bloc/bloc.dart';
-import 'package:fcode_bloc/bloc/bloc_provider.dart';
-import 'package:fcode_bloc/bloc/ui_model.dart';
-import 'package:fcode_bloc/log/log.dart';
+import 'package:fcode_bloc/src/bloc/bloc.dart';
+import 'package:fcode_bloc/src/bloc/bloc_provider.dart';
+import 'package:fcode_bloc/src/bloc/ui_model.dart';
+import 'package:fcode_bloc/src/log/log.dart';
 import 'package:flutter/material.dart';
 
 class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends StatelessWidget {

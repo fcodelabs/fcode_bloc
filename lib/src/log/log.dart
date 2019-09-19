@@ -14,7 +14,7 @@ class Log {
 
   final String tag;
 
-  Log._(this.tag);
+  Log._(tag) : this.tag = tag.padRight(25);
 
   factory Log(String tag) {
     if (!_logs.containsKey(tag)) {

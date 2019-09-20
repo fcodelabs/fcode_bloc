@@ -15,7 +15,7 @@ abstract class FirebaseRepository<T extends DBModel> {
   Future<void> add({@required T item, @required String type, DocumentReference parent}) async {
     final data = toMap(item);
     if (item.ref == null) {
-      item.ref = _merge(type, parent).document();
+      item.ref = _merge(type, parent).document(item.id);
     }
     item.ref.setData(data);
   }

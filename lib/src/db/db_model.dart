@@ -26,4 +26,6 @@ abstract class DBModel {
   DBModel clone() {
     return this;
   }
+
+  String get id => ref?.documentID;
 }

@@ -40,4 +40,9 @@ class ReferenceHandler<T extends DBModel> {
   }
 
   Stream<T> get stream => _stream.stream;
+
+  @mustCallSuper
+  void dispose() {
+    _stream.close();
+  }
 }

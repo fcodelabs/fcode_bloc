@@ -26,6 +26,7 @@ class ReferenceHandler<T extends DBModel> {
     final completer = Completer();
     reference.snapshots().forEach((snapshot) {
       _item = repository.fromSnapshot(snapshot);
+      _stream.add(_item);
       if (!completer.isCompleted) {
         completer.complete();
       }

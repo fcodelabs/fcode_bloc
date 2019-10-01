@@ -38,7 +38,7 @@ class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends Statele
       stream: bloc.stream.transform(streamTransformer),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          throw FlutterError(snapshot.error.toString());
+          throw snapshot.error;
         }
         return builder(context, snapshot.data);
       },

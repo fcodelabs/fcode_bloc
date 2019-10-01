@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ReferenceHandler<T extends DBModel> {
-  final FirebaseRepository<T> repository;
+  FirebaseRepository<T> repository;
   final DocumentReference reference;
   final T model;
   final BehaviorSubject<T> _stream;

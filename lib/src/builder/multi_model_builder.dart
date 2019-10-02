@@ -16,8 +16,6 @@ class MultiModelBuilder<T extends DBModel> extends StatelessWidget {
   final ScrollPhysics physics;
   final ScrollController controller;
   final DragStartBehavior dragStartBehavior;
-  final CrossAxisAlignment crossAxisAlignment;
-  final MainAxisAlignment mainAxisAlignment;
 
   MultiModelBuilder({
     Key key,
@@ -25,8 +23,6 @@ class MultiModelBuilder<T extends DBModel> extends StatelessWidget {
     @required this.repository,
     @required this.builder,
     this.condition,
-    this.mainAxisAlignment = MainAxisAlignment.start,
-    this.crossAxisAlignment = CrossAxisAlignment.start,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.padding,
@@ -38,37 +34,24 @@ class MultiModelBuilder<T extends DBModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = models.map<ModelBuilder>((model) {
-      return ModelBuilder(
-        key: key,
-        repository: repository,
-        model: model,
-        condition: condition,
-        builder: builder,
-      );
-    }).toList(growable: false);
-
-    final widget = scrollDirection == Axis.vertical
-        ? Column(
-            crossAxisAlignment: crossAxisAlignment,
-            mainAxisAlignment: mainAxisAlignment,
-            children: children,
-          )
-        : Row(
-            crossAxisAlignment: crossAxisAlignment,
-            mainAxisAlignment: mainAxisAlignment,
-            children: children,
-          );
-
-    return SingleChildScrollView(
-      scrollDirection: scrollDirection,
-      reverse: reverse,
-      padding: padding,
-      primary: primary,
-      physics: physics,
-      controller: controller,
-      dragStartBehavior: dragStartBehavior,
-      child: widget,
-    );
+     return ListView.builder(
+       scrollDirection: scrollDirection,
+       reverse: reverse,
+       padding: padding,
+       primary: primary,
+       physics: physics,
+       controller: controller,
+       dragStartBehavior: dragStartBehavior,
+       itemCount: models.length,
+       itemBuilder: (context, index) {
+         return ModelBuilder(
+           key: key,
+           repository: repository,
+           model: models[index],
+           condition: condition,
+           builder: builder,
+         );
+       },
+     );
   }
 }

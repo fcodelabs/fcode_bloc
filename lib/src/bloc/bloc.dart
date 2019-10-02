@@ -13,18 +13,19 @@ abstract class BLoC<Action, S extends UIModel> {
   final _inHook = PublishSubject<Action>();
   final _outHook = BehaviorSubject<S>();
   final _listeners = <String, BlocListener<Action, S>>{};
+  final _listenersList = ObserverList<BlocListener<Action, S>>();
   final _globalBlocCollector = _GlobalBlocCollector();
 
-  Iterable<BlocListener<Action, S>> _listenersList = [];
   S currentState;
   Action currentAction;
+  StreamSubscription<S> _subscription;
 
   BLoC() {
     currentState = initState;
     _outHook.add(currentState);
 
     // Every action listener
-    _inHook.asyncExpand((action) {
+    _subscription = _inHook.asyncExpand((action) {
       currentAction = action;
 
       // Map actions to states
@@ -38,9 +39,7 @@ abstract class BLoC<Action, S extends UIModel> {
           raiseError(error, stacktrace);
         }
       });
-    }).forEach((state) {
-      raiseStateChange(state);
-    });
+    }).listen((state) => raiseStateChange(state));
     _globalBlocCollector.add(this);
   }
 
@@ -50,6 +49,7 @@ abstract class BLoC<Action, S extends UIModel> {
   @mustCallSuper
   void dispose() {
     _inHook.close();
+    _subscription.cancel();
     _outHook.close();
     _globalBlocCollector.remove(this);
   }
@@ -57,21 +57,20 @@ abstract class BLoC<Action, S extends UIModel> {
   /// Call this function to raise an error event in all the listeners.
   @protected
   void raiseError(error, [stacktrace]) {
-    _listenersList.forEach((listener) {
-      final snapshot = BlocSnapshot<Action, S>.fromError(error, stacktrace);
-      listener(snapshot);
-    });
+    final snapshot = BlocSnapshot<Action, S>.fromError(error, stacktrace);
+    _notifyListeners(snapshot);
   }
 
   /// Call this method to raise and StateChange event in all the listeners
   /// and to add the new state to the Bloc Stream
   @protected
   void raiseStateChange(S state) {
+    if (_outHook.isClosed) {
+      return;
+    }
     // Call state change in every listener
-    _listenersList.forEach((listener) {
-      final snapshot = BlocSnapshot<Action, S>.fromData(state, currentState);
-      listener(snapshot);
-    });
+    final snapshot = BlocSnapshot<Action, S>.fromData(state, currentState);
+    _notifyListeners(snapshot);
     currentState = state;
 
     // Send new state through stream
@@ -79,14 +78,16 @@ abstract class BLoC<Action, S extends UIModel> {
   }
 
   void addListener({@required String name, @required BlocListener<Action, S> listener}) {
+    removeListener(name: name);
     _listeners[name] = listener;
-    _listenersList = _listeners.values;
+    _listenersList.add(listener);
   }
 
   void removeListener({@required String name}) {
-    if (_listeners.containsKey(name)) {
+    final listener = _listeners[name];
+    if (listener != null) {
       _listeners.remove(name);
-      _listenersList = _listeners.values;
+      _listenersList.remove(listener);
     }
   }
 
@@ -95,11 +96,37 @@ abstract class BLoC<Action, S extends UIModel> {
   S get initState;
 
   void dispatch(Action action) {
-    _listenersList.forEach((listener) {
-      final snapshot = BlocSnapshot<Action, S>.fromAction(action);
-      listener(snapshot);
-    });
-    _inHook.sink.add(action);
+    if (_inHook.isClosed) {
+      return;
+    }
+    final snapshot = BlocSnapshot<Action, S>.fromAction(action);
+    _notifyListeners(snapshot);
+    _inHook.add(action);
+  }
+
+  void _notifyListeners(final BlocSnapshot<Action, S> snapshot) {
+    final List<BlocListener<Action, S>> localListeners = List<BlocListener<Action, S>>.from(_listenersList);
+    for (BlocListener<Action, S> listener in localListeners) {
+      try {
+        if (_listenersList.contains(listener)) {
+          listener(snapshot);
+        }
+      } catch (exception, stack) {
+        FlutterError.reportError(FlutterErrorDetails(
+          exception: exception,
+          stack: stack,
+          library: 'fcode_bloc',
+          context: ErrorDescription('while notifying listeners for $runtimeType'),
+          informationCollector: () sync* {
+            yield DiagnosticsProperty<BLoC>(
+              'The $runtimeType notifying listeners was',
+              this,
+              style: DiagnosticsTreeStyle.errorProperty,
+            );
+          },
+        ));
+      }
+    }
   }
 
   @protected

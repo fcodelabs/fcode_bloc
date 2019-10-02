@@ -48,32 +48,30 @@ class ReferenceHandler<T extends DBModel> {
   }
 
   void removeListener(ValueChanged<T> listener) {
-    _listeners?.remove(listener);
+    _listeners.remove(listener);
   }
 
   void _notifyListeners() {
-    if (_listeners != null) {
-      final List<ValueChanged<T>> localListeners = List<ValueChanged<T>>.from(_listeners);
-      for (ValueChanged<T> listener in localListeners) {
-        try {
-          if (_listeners.contains(listener)) {
-            listener(_item);
-          }
-        } catch (exception, stack) {
-          FlutterError.reportError(FlutterErrorDetails(
-            exception: exception,
-            stack: stack,
-            library: 'fcode_bloc',
-            context: ErrorDescription('while notifying listeners for $runtimeType'),
-            informationCollector: () sync* {
-              yield DiagnosticsProperty<ReferenceHandler>(
-                'The $runtimeType notifying listeners was',
-                this,
-                style: DiagnosticsTreeStyle.errorProperty,
-              );
-            },
-          ));
+    final List<ValueChanged<T>> localListeners = List<ValueChanged<T>>.from(_listeners);
+    for (ValueChanged<T> listener in localListeners) {
+      try {
+        if (_listeners.contains(listener)) {
+          listener(_item);
         }
+      } catch (exception, stack) {
+        FlutterError.reportError(FlutterErrorDetails(
+          exception: exception,
+          stack: stack,
+          library: 'fcode_bloc',
+          context: ErrorDescription('while notifying listeners for $runtimeType'),
+          informationCollector: () sync* {
+            yield DiagnosticsProperty<ReferenceHandler>(
+              'The $runtimeType notifying listeners was',
+              this,
+              style: DiagnosticsTreeStyle.errorProperty,
+            );
+          },
+        ));
       }
     }
   }

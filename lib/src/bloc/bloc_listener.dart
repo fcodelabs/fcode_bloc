@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
+
 typedef BlocListener<A, S> = void Function(BlocSnapshot<A, S> snapshot);
 
+@immutable
 class BlocSnapshot<A, S> {
   final S data;
   final S preData;

@@ -34,24 +34,24 @@ class MultiModelBuilder<T extends DBModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     return ListView.builder(
-       scrollDirection: scrollDirection,
-       reverse: reverse,
-       padding: padding,
-       primary: primary,
-       physics: physics,
-       controller: controller,
-       dragStartBehavior: dragStartBehavior,
-       itemCount: models.length,
-       itemBuilder: (context, index) {
-         return ModelBuilder(
-           key: key,
-           repository: repository,
-           model: models[index],
-           condition: condition,
-           builder: builder,
-         );
-       },
-     );
+    return ListView.builder(
+      scrollDirection: scrollDirection,
+      reverse: reverse,
+      padding: padding,
+      primary: primary,
+      physics: physics,
+      controller: controller,
+      dragStartBehavior: dragStartBehavior,
+      itemCount: models.length,
+      itemBuilder: (context, index) {
+        return ModelBuilder(
+          key: key,
+          repository: repository,
+          model: models[index],
+          condition: condition,
+          builder: builder,
+        );
+      },
+    );
   }
 }

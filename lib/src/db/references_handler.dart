@@ -23,11 +23,4 @@ class ReferencesHandler<T extends DBModel> {
     }
     return items;
   }
-
-  @mustCallSuper
-  void dispose() {
-    handlers.forEach((handler) {
-      handler.dispose();
-    });
-  }
 }

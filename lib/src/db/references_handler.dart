@@ -30,7 +30,7 @@ class ReferencesHandler<T extends DBModel> {
         repository: repository,
         reference: ref,
       );
-      _items.add(await handler.request());
+      _items[i] = await handler.request();
       handler.addListener((_) => _updateList(i));
       handlers.add(handler);
     }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 abstract class DBModel {
   DocumentReference ref;
@@ -26,6 +27,9 @@ abstract class DBModel {
   DBModel clone() {
     return this;
   }
+
+  @mustCallSuper
+  void dispose(){}
 
   String get id => ref?.documentID;
 }

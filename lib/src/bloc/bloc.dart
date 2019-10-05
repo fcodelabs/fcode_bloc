@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:fcode_bloc/fcode_bloc.dart';
 import 'package:fcode_bloc/src/bloc/bloc_listener.dart';
 import 'package:fcode_bloc/src/bloc/bloc_provider.dart';
 import 'package:fcode_bloc/src/bloc/ui_model.dart';
@@ -80,6 +81,15 @@ import 'package:rxdart/rxdart.dart';
 ///
 /// Updated [Stream] can be accessed via [stream] property. Without directly using [stream] property
 /// it is better to use [BlocBuilder]s or [BlocListener]s to access `State` changes.
+///
+/// See also:
+///
+///  * [BlocProvider], which can be used to provide [BLoC]s to the [Widget] tree.
+///  * [MultiBlocProvider], which can be used to provide multiple [BLoC]s down the [Widget] tree.
+///  * [BlocBuilder], which can be used as a [Widget] that will be rebuilt itself on
+///    `State` changes in the [BLoC].
+///  * [BlocListener], which will trigger on `State` change, [Action] change or error events.
+///  * [UIModel], which needs to be implemented to be used as the `State` of the [BLoC].
 abstract class BLoC<Action, S extends UIModel> {
   final _log = Log("BLoC");
   final _inHook = PublishSubject<Action>();

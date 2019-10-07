@@ -98,6 +98,8 @@ abstract class BLoC<Action, S extends UIModel> {
   final _listenersList = ObserverList<BlocListener<Action, S>>();
   final _globalBlocCollector = _GlobalBlocCollector();
 
+  bool _disposed = false;
+
   /// Current State ([S]) of the [BLoC].
   ///
   /// This is automatically update according to the [mapActionToState] method. Initial state of the [BLoC]
@@ -129,7 +131,7 @@ abstract class BLoC<Action, S extends UIModel> {
         // handle them with listeners or print the src.log
         if (_listenersList.length == 0) {
           _log.e(error.toString());
-          _log.e(stacktrace.toString());
+          _log.e(stacktrace?.toString() ?? "");
         } else {
           raiseError(error, stacktrace);
         }
@@ -145,6 +147,7 @@ abstract class BLoC<Action, S extends UIModel> {
   /// See documentation of [BlocProvider] for more information.
   @mustCallSuper
   void dispose() {
+    this._disposed = true;
     _inHook.close();
     _subscription.cancel();
     _outHook.close();
@@ -154,6 +157,11 @@ abstract class BLoC<Action, S extends UIModel> {
   /// Call this function to raise an error event for all the listeners.
   @protected
   void raiseError(error, [stacktrace]) {
+    if (_disposed) {
+      _log.e(error.toString());
+      _log.e(stacktrace?.toString() ?? "");
+      return;
+    }
     final snapshot = BlocSnapshot<Action, S>.fromError(error, stacktrace);
     _notifyListeners(snapshot);
   }
@@ -162,7 +170,7 @@ abstract class BLoC<Action, S extends UIModel> {
   /// and to add the new state to the [stream].
   @protected
   void raiseStateChange(S state) {
-    if (_outHook.isClosed) {
+    if (_disposed) {
       return;
     }
     // Call state change in every listener
@@ -188,7 +196,9 @@ abstract class BLoC<Action, S extends UIModel> {
     _listenersList.add(listener);
   }
 
-  /// Remove the [BlocListener] which is associated with the [name].
+  /// Remove the [BlocListener] which is associated with the [name]. Every listener will
+  /// automatically be removed once [dispose] is called. (Will be automatically called
+  /// if you are using [BlocProvider] for providing [BLoC] down the [Widget] tree.)
   ///
   /// For more information see [BlocListener] documentation.
   void removeListener({@required String name}) {
@@ -214,7 +224,7 @@ abstract class BLoC<Action, S extends UIModel> {
   ///
   /// Calling this function will automatically raise a `Action Changed` event in listeners.
   void dispatch(Action action) {
-    if (_inHook.isClosed) {
+    if (_disposed) {
       return;
     }
     final snapshot = BlocSnapshot<Action, S>.fromAction(action);

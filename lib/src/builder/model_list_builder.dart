@@ -83,5 +83,4 @@ class _ModelListBuilderState<T extends DBModel> extends State<ModelListBuilder<T
       children: children,
     );
   }
-
 }

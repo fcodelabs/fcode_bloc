@@ -214,6 +214,7 @@ abstract class BLoC<Action, S extends UIModel> {
   ///
   /// For every `State` which will be added to the [Stream] will automatically raise a
   /// `State Changed` event in all the listeners.
+  @protected
   Stream<S> mapActionToState(Action action);
 
   /// Initial `State` of the [BLoC] is provided with this method. See example at the [BLoC] class

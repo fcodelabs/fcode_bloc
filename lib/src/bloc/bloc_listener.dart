@@ -6,9 +6,9 @@ import 'package:fcode_bloc/fcode_bloc.dart';
 import 'package:flutter/material.dart';
 
 /// Signature for the listener function of the [BLoC] which will be called in the
-/// following `State` changes of the [BLoC].
+/// following event changes in the [BLoC].
 ///
-///  * `Action` changes
+///  * New `Action` was dispatched to the [BLoC]
 ///  * Error occurs in the [BLoC] while running [BLoC.mapActionToState]
 ///  * `State` of the [BLoC] changes
 ///
@@ -49,7 +49,7 @@ import 'package:flutter/material.dart';
 ///
 /// @override
 /// void dispose() {
-///   bloc.removeListener(name: runtimeType.toString());
+///   bloc?.removeListener(name: runtimeType.toString());
 ///   super.dispose();
 /// }
 /// ```
@@ -64,71 +64,72 @@ import 'package:flutter/material.dart';
 ///  * [BLoC], which is using [BlocListener] as its listener signature.
 typedef BlocListener<A, S> = void Function(BlocSnapshot<A, S> snapshot);
 
-/// Holds data that is passed as the argument when [BlocListener] is called.
+/// Holds the event change data of the [BLoC]. Instance of a [BlocSnapshot] is passed
+/// as the argument when [BlocListener] is called.
 ///
-/// Users will not need to create objects of this class. Required data will
+/// Users will not need to create objects of this class. Required instances with the data will
 /// automatically be created by the [BLoC] and user will only need to access the data
-/// that is stored in the objects.
+/// that is stored in the [BlocSnapshot] instances.
 ///
-/// [BlocListener] has same `Action` ([A]) and `State` ([S]) of the [BLoC].
+/// [BlocSnapshot] has the same `Action` ([A]) and `State` ([S]) of the [BLoC].
 ///
 /// See also:
 ///
-///  * [BlocListener], which needs to be called with instances of [BlocListener].
+///  * [BlocListener], which needs to be called with instances of [BlocSnapshot].
 ///  * [BLoC], which is using [BlocListener] as its listener signature that will
-///    automatically be called on `Event Changes` with instances of [BlocListener].
+///    automatically be called on `Event Changes` with instances of [BlocSnapshot].
 @immutable
 class BlocSnapshot<A, S> {
-  /// Store the current `State` ([S]) of the [BLoC].
+  /// Stores the current `State` ([S]) of the [BLoC].
   ///
   /// `null` if the event is not a `State Change`.
   final S data;
 
-  /// Store the previous `State` ([S]) of the [BLoC].
+  /// Stores the previous `State` ([S]) of the [BLoC].
   ///
   /// `null` if the event is not a `State Change`.
   final S preData;
 
-  /// Store the current `Action` ([A]) of the [BLoC].
+  /// Stores the current `Action` ([A]) of the [BLoC].
   ///
-  /// `null` if the event is not a `Action Change`.
+  /// `null` if the event is not an `Action Change`.
   final A action;
 
-  /// Store the current error of the [BLoC].
+  /// Stores the current error of the [BLoC].
   ///
-  /// `null` if there was no error in [BLoC].
+  /// `null` if there was no error in the [BLoC].
   final Object error;
 
   /// Store the statcktrace of the current error of the [BLoC].
   ///
-  /// `null` if there was no error in [BLoC].
+  /// `null` if there was no error in the [BLoC].
   final StackTrace stacktrace;
 
   BlocSnapshot._(this.data, this.preData, this.action, this.error, this.stacktrace);
 
-  /// Creates a instance of [BlocSnapshot] with current `State` ([data]) and previous
+  /// Creates a instance of [BlocSnapshot] with the current `State` ([data]) and the previous
   /// `State` ([preData]).
   ///
-  /// Used when `State` changes in the [BLoC].
+  /// Used when the `State` changes in the [BLoC].
   BlocSnapshot.fromData(S data, S preData) : this._(data, preData, null, null, null);
 
-  /// Creates a instance of [BlocSnapshot] with current `Action` ([action]).
+  /// Creates a instance of [BlocSnapshot] with the current `Action` ([action]).
   ///
-  /// Used when `Action` changes in the [BLoC].
+  /// Used when a new `Action` is dispatched to the [BLoC].
   BlocSnapshot.fromAction(A action) : this._(null, null, action, null, null);
 
   /// Creates a instance of [BlocSnapshot] with a [error] and a [stacktrace].
   ///
-  /// Used when error occurs inside the [BLoC].
+  /// Used when an error occurs inside the [BLoC].
   BlocSnapshot.fromError(Object error, [stacktrace]) : this._(null, null, null, error, stacktrace);
 
-  /// Returns whether this instance was created by raising a error inside the [BLoC].
+  /// Returns whether this instance was created by raising an error inside the [BLoC].
   bool get hasError => error != null;
 
   /// Returns whether this instance was created by raising a `State` change in the [BLoC].
   bool get hasData => data != null;
 
-  /// Returns whether this instance was created by raising a `Action` change in the [BLoC].
+  /// Returns whether this instance was created by raising an `Action` change in the [BLoC].
   bool get hasAction => action != null;
 
   @override

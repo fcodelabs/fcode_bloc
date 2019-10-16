@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT license that can be
 // found in the LICENSE file.
 
-import 'package:fcode_bloc/fcode_bloc.dart';
+import 'package:fcode_bloc/src/bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
 /// Signature for the listener function of the [BLoC] which will be called in the
@@ -39,6 +39,7 @@ import 'package:flutter/material.dart';
 ///       if (snapshot.hasData) {
 ///         final state = snapshot.data;
 ///         final preState = snapshot.preData;
+///         final action = snapshot.action;
 ///         // Handle State Change
 ///       }
 ///     },
@@ -60,12 +61,12 @@ import 'package:flutter/material.dart';
 ///
 /// See also:
 ///
-///  * [BlocSnapshot], which will be used as the argument of the [BlocListener].
-///  * [BLoC], which is using [BlocListener] as its listener signature.
-typedef BlocListener<A, S> = void Function(BlocSnapshot<A, S> snapshot);
+///  * [BlocSnapshot], which will be used as the argument of the [BlocCallback].
+///  * [BLoC], which is using [BlocCallback] as its listener signature.
+typedef BlocCallback<A, S> = void Function(BlocSnapshot<A, S> snapshot);
 
 /// Holds the event change data of the [BLoC]. Instance of a [BlocSnapshot] is passed
-/// as the argument when [BlocListener] is called.
+/// as the argument when [BlocCallback] is called.
 ///
 /// Users will not need to create objects of this class. Required instances with the data will
 /// automatically be created by the [BLoC] and user will only need to access the data
@@ -75,8 +76,8 @@ typedef BlocListener<A, S> = void Function(BlocSnapshot<A, S> snapshot);
 ///
 /// See also:
 ///
-///  * [BlocListener], which needs to be called with instances of [BlocSnapshot].
-///  * [BLoC], which is using [BlocListener] as its listener signature that will
+///  * [BlocCallback], which needs to be called with instances of [BlocSnapshot].
+///  * [BLoC], which is using [BlocCallback] as its listener signature that will
 ///    automatically be called on `Event Changes` with instances of [BlocSnapshot].
 @immutable
 class BlocSnapshot<A, S> {
@@ -107,11 +108,11 @@ class BlocSnapshot<A, S> {
 
   BlocSnapshot._(this.data, this.preData, this.action, this.error, this.stacktrace);
 
-  /// Creates a instance of [BlocSnapshot] with the current `State` ([data]) and the previous
-  /// `State` ([preData]).
+  /// Creates a instance of [BlocSnapshot] with the current `State` ([data]), previous
+  /// `State` ([preData]) and the `Action` involved in the state change.
   ///
   /// Used when the `State` changes in the [BLoC].
-  BlocSnapshot.fromData(S data, S preData) : this._(data, preData, null, null, null);
+  BlocSnapshot.fromData(S data, S preData, A action) : this._(data, preData, action, null, null);
 
   /// Creates a instance of [BlocSnapshot] with the current `Action` ([action]).
   ///
@@ -130,7 +131,7 @@ class BlocSnapshot<A, S> {
   bool get hasData => data != null;
 
   /// Returns whether this instance was created by raising an `Action` change in the [BLoC].
-  bool get hasAction => action != null;
+  bool get hasAction => action != null && data == null;
 
   @override
   String toString() => '$runtimeType($data, $error, $stacktrace)';

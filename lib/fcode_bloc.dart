@@ -11,6 +11,10 @@ export 'package:flutter_bloc/src/multi_bloc_listener.dart';
 export 'package:flutter_bloc/src/multi_bloc_provider.dart';
 
 export 'src/bloc/bloc.dart';
+export 'src/bloc/bloc_builder.dart';
+export 'src/bloc/bloc_callback.dart';
+export 'src/bloc/bloc_listener.dart';
+export 'src/bloc/transition.dart';
 export 'src/bloc/ui_model.dart';
 export 'src/db/cloud_support.dart';
 export 'src/db/db_model.dart';

@@ -7,7 +7,6 @@ import 'package:fcode_bloc/src/bloc/bloc_callback.dart';
 import 'package:fcode_bloc/src/bloc/ui_model.dart';
 import 'package:fcode_bloc/src/log/log.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' as _fb;
 
 abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State> {
   final _log = Log("BLoC");
@@ -46,6 +45,7 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
   }
 
   @override
+  @deprecated
   void onEvent(Action action) {
     if (_disposed) {
       return;
@@ -55,6 +55,7 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
   }
 
   @override
+  @deprecated
   void onTransition(_b.Transition<Action, State> transition) {
     if (_disposed) {
       return;
@@ -99,9 +100,3 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
     super.dispose();
   }
 }
-
-class Transition<Action, State extends UIModel> extends _b.Transition<Action, State> {}
-
-class BlocBuilder<B extends BLoC<dynamic, S>, S extends UIModel> extends _fb.BlocBuilder<B, S> {}
-
-class BlocListener<B extends BLoC<dynamic, S>, S extends UIModel> extends _fb.BlocListener<B, S> {}

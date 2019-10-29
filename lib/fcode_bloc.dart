@@ -17,6 +17,7 @@ export 'src/bloc/bloc_listener.dart';
 export 'src/bloc/transition.dart';
 export 'src/bloc/ui_model.dart';
 export 'src/db/cloud_support.dart';
+export 'src/db/collection_reference_handler.dart';
 export 'src/db/db_model.dart';
 export 'src/db/reference_handler.dart';
 export 'src/db/references_handler.dart';

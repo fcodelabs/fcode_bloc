@@ -9,19 +9,19 @@ abstract class DBModel {
   @override
   bool operator ==(other) {
     if (other is DBModel) {
-      return other.ref.path == this.ref.path;
+      return other.ref?.path == this.ref?.path;
     }
     return false;
   }
 
   @override
   int get hashCode {
-    return ref.hashCode;
+    return ref?.hashCode ?? 0;
   }
 
   @override
   String toString() {
-    return "Reference: " + ref.path;
+    return "Reference: ${ref?.path}";
   }
 
   DBModel clone() {

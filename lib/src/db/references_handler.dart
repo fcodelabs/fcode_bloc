@@ -6,10 +6,12 @@ import 'package:fcode_bloc/src/db/reference_handler.dart';
 import 'package:fcode_bloc/src/db/repo/firebase_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ReferencesHandler<T extends DBModel> {
   final handlers = <ReferenceHandler>[];
   final _listeners = ObserverList<ValueChanged<List<T>>>();
+  final _behaviorSubject = BehaviorSubject<List<T>>();
   final List<T> _items;
   final _init = Completer();
 
@@ -20,6 +22,7 @@ class ReferencesHandler<T extends DBModel> {
 
   @mustCallSuper
   void dispose() {
+    _behaviorSubject.close();
     handlers.forEach((handler) => handler.dispose());
   }
 
@@ -40,11 +43,16 @@ class ReferencesHandler<T extends DBModel> {
   Future<void> _updateList(i) async {
     _items[i] = await handlers[i].request();
     _notifyListeners();
+    _behaviorSubject.add(_items);
   }
 
   Future<List<T>> request() async {
     await _init.future;
     return _items;
+  }
+
+  Stream<List<T>> stream() {
+    return _behaviorSubject.stream;
   }
 
   void addListener(ValueChanged<List<T>> listener) {

@@ -5,11 +5,13 @@ import 'package:fcode_bloc/src/db/db_model.dart';
 import 'package:fcode_bloc/src/db/repo/firebase_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class CollectionReferenceHandler<T extends DBModel> {
   FirebaseRepository<T> repository;
   final CollectionReference reference;
   final _listeners = ObserverList<ValueChanged<List<T>>>();
+  final _behaviorSubject = BehaviorSubject<List<T>>();
   bool _init = false;
   List<T> _items;
   StreamSubscription _subscription;
@@ -26,6 +28,7 @@ class CollectionReferenceHandler<T extends DBModel> {
       _items = snapshot.documents.map<T>((document) {
         return repository.fromSnapshot(document);
       }).toList(growable: false);
+      _behaviorSubject.add(_items);
       _notifyListeners();
       if (!completer.isCompleted) {
         completer.complete();
@@ -37,12 +40,18 @@ class CollectionReferenceHandler<T extends DBModel> {
 
   @mustCallSuper
   void dispose() {
-    _subscription.cancel();
+    _subscription?.cancel();
+    _behaviorSubject.close();
   }
 
   Future<List<T>> request() async {
     await initialize();
     return _items;
+  }
+
+  Stream<List<T>> stream() {
+    initialize();
+    return _behaviorSubject.stream;
   }
 
   void addListener(ValueChanged<List<T>> listener) {

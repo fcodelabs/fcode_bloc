@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class CloudSupport {
   Future<HttpsCallableResult> call({@required String functionName, dynamic params}) async {
+    assert(functionName != null && functionName.isNotEmpty);
     final callable = CloudFunctions.instance.getHttpsCallable(
       functionName: functionName,
     );

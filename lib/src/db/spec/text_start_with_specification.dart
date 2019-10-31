@@ -7,7 +7,9 @@ class TextStartWithSpecification extends SpecificationI {
   final String field;
   final String containText;
 
-  TextStartWithSpecification(this.field, this.containText);
+  TextStartWithSpecification(this.field, this.containText)
+      : assert(field != null && field.isNotEmpty),
+        assert(containText != null);
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {

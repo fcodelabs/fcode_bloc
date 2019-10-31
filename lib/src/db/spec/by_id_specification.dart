@@ -6,7 +6,7 @@ import 'package:fcode_bloc/src/db/specification.dart';
 class ByIDSpecification implements SpecificationI {
   final String _id;
 
-  ByIDSpecification(this._id);
+  ByIDSpecification(this._id): assert(_id != null && _id.isNotEmpty);
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {

@@ -16,7 +16,9 @@ class ReferencesHandler<T extends DBModel> {
   final _init = Completer();
 
   ReferencesHandler({@required FirebaseRepository<T> repository, List<DocumentReference> references})
-      : _items = List(references.length) {
+      : assert(repository != null),
+        assert(references != null),
+       _items = List(references.length) {
     _initFill(repository, references);
   }
 
@@ -56,10 +58,12 @@ class ReferencesHandler<T extends DBModel> {
   }
 
   void addListener(ValueChanged<List<T>> listener) {
+    assert(listener != null);
     _listeners.add(listener);
   }
 
   void removeListener(ValueChanged<List<T>> listener) {
+    assert(listener != null);
     _listeners.remove(listener);
   }
 

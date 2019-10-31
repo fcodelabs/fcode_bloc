@@ -15,12 +15,15 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
   bool _disposed = false;
 
   void addListener({@required String name, @required BlocCallback<Action, State> listener}) {
+    assert(name != null && name.isNotEmpty);
+    assert(listener != null);
     removeListener(name: name);
     _listenersMap[name] = listener;
     _listeners.add(listener);
   }
 
   void removeListener({@required String name}) {
+    assert(name != null && name.isNotEmpty);
     final listener = _listenersMap[name];
     if (listener != null) {
       _listenersMap.remove(name);

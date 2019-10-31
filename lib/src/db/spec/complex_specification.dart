@@ -6,7 +6,7 @@ import 'package:fcode_bloc/src/db/specification.dart';
 class ComplexSpecification implements SpecificationI {
   List<ComplexOperation> _complexWhere;
 
-  ComplexSpecification(this._complexWhere);
+  ComplexSpecification(this._complexWhere) : assert(_complexWhere != null);
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {

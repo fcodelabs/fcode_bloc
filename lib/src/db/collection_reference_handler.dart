@@ -16,7 +16,9 @@ class CollectionReferenceHandler<T extends DBModel> {
   List<T> _items;
   StreamSubscription _subscription;
 
-  CollectionReferenceHandler({@required this.repository, @required this.reference});
+  CollectionReferenceHandler({@required this.repository, @required this.reference})
+      : assert(repository != null),
+        assert(reference != null);
 
   Future<void> initialize() async {
     if (_init) {
@@ -55,10 +57,12 @@ class CollectionReferenceHandler<T extends DBModel> {
   }
 
   void addListener(ValueChanged<List<T>> listener) {
+    assert(listener != null);
     _listeners.add(listener);
   }
 
   void removeListener(ValueChanged<List<T>> listener) {
+    assert(listener != null);
     _listeners.remove(listener);
   }
 

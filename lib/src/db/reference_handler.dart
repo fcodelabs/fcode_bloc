@@ -39,7 +39,7 @@ class ReferenceHandler<T extends DBModel> {
   }
 
   @mustCallSuper
-  void dispose() {
+  void close() {
     _subscription?.cancel();
     _behaviorSubject.close();
   }

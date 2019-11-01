@@ -58,7 +58,7 @@ class _ModelBuilderState<T extends DBModel> extends State<ModelBuilder<T>> {
   }
 
   void _unsubscribe() {
-    handler?.dispose();
+    handler?.close();
   }
 
   @override

@@ -29,7 +29,7 @@ abstract class DBModel {
   }
 
   @mustCallSuper
-  void dispose() {}
+  void close() {}
 
   String get id => ref?.documentID;
 }

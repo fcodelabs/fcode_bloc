@@ -48,7 +48,8 @@ abstract class FirebaseRepository<T extends DBModel> {
     await item.ref?.delete();
   }
 
-  Future<void> removeList({@required SpecificationI specification, @required String type, DocumentReference parent}) async {
+  Future<void> removeList(
+      {@required SpecificationI specification, @required String type, DocumentReference parent}) async {
     assert(specification != null);
     final data = await specification.specify(_merge(type, parent)).first;
     for (final item in data) {

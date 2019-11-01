@@ -97,9 +97,9 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
   }
 
   @override
-  void dispose() {
+  void close() {
     _disposed = true;
-    currentState.dispose();
-    super.dispose();
+    state.close();
+    super.close();
   }
 }

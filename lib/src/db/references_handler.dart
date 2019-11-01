@@ -18,14 +18,14 @@ class ReferencesHandler<T extends DBModel> {
   ReferencesHandler({@required FirebaseRepository<T> repository, List<DocumentReference> references})
       : assert(repository != null),
         assert(references != null),
-       _items = List(references.length) {
+        _items = List(references.length) {
     _initFill(repository, references);
   }
 
   @mustCallSuper
-  void dispose() {
+  void close() {
     _behaviorSubject.close();
-    handlers.forEach((handler) => handler.dispose());
+    handlers.forEach((handler) => handler.close());
   }
 
   Future<void> _initFill(FirebaseRepository<T> repository, List<DocumentReference> references) async {

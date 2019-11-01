@@ -5,5 +5,5 @@ abstract class UIModel {
   UIModel clone();
 
   @mustCallSuper
-  void dispose() {}
+  void close() {}
 }

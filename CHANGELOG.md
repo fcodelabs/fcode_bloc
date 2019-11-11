@@ -1,3 +1,70 @@
-## [0.0.1] - TODO: Add release date.
+## [0.3.7] - Update dependencies to the newest version
 
-* TODO: Describe initial release.
+## [0.3.6] - Update dependencies to the newest version
+
+## [0.3.5] - Implement remove function in Repository
+
+## [0.3.3]
+ 
+* Add assertions
+* Add Streams to Handlers
+* Add CollectionReference to Handler
+
+## [0.3.2] - Remove Firebase Auth
+
+## [0.3.1] - Put class to sep files
+
+* Put classes in BLoC into separate files
+* Make UIModel immutable
+
+## [0.3.0] - Use flutter_bloc and bloc by @felangel
+
+## [0.2.10] - Modify Docs
+
+## [0.2.8] 
+
+* Modify Docs
+* Firebase Cloud Functions support added
+* Added Listeners to reference/s handlers
+* Model List Builder added
+
+## [0.2.7] 
+
+* Bug Fixes
+* New way of handling listeners in BLoC
+* Model Builder works with listeners
+* Model Stream Builder added
+* Multi Model Builder added
+* Make Model Builder Stateful
+
+## [0.2.6] 
+
+* Bug fixes
+* DB model can have custom IDs
+* Move everything to src
+* Action Listener is called before it's added to the hook
+* Update dependencies
+* Global BLoC collector
+
+## [0.2.5] 
+
+* Bloc Listener has a new way of communicating with listeners
+* Bloc has raise errors
+* Bloc can manually call a state change
+* Performance improvements in BLoC
+
+## [0.2.4] - Text start with Specification added
+
+## [0.2.3] 
+
+* By ID Specification added
+* Reference/References handler added
+
+## [0.2.2] 
+
+* By Reference Specification added
+* Remove transformer
+
+## [0.2.1] - Replace hook with rx
+
+## [0.2.0] - Change package name

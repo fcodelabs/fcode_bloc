@@ -99,7 +99,6 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
   @override
   Future<void> close() async {
     _disposed = true;
-    state.close();
     await super.close();
   }
 }

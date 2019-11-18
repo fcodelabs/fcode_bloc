@@ -28,8 +28,5 @@ abstract class DBModel {
     return this;
   }
 
-  @mustCallSuper
-  void close() {}
-
   String get id => ref?.documentID;
 }

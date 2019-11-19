@@ -15,7 +15,9 @@ class ReferencesHandler<T extends DBModel> {
   final List<T> _items;
   final _init = Completer();
 
-  ReferencesHandler({@required FirebaseRepository<T> repository, List<DocumentReference> references})
+  ReferencesHandler(
+      {@required FirebaseRepository<T> repository,
+      List<DocumentReference> references})
       : assert(repository != null),
         assert(references != null),
         _items = List(references.length) {
@@ -28,7 +30,8 @@ class ReferencesHandler<T extends DBModel> {
     handlers.forEach((handler) => handler.close());
   }
 
-  Future<void> _initFill(FirebaseRepository<T> repository, List<DocumentReference> references) async {
+  Future<void> _initFill(FirebaseRepository<T> repository,
+      List<DocumentReference> references) async {
     for (int i = 0; i < references.length; i++) {
       final ref = references[i];
       final handler = ReferenceHandler(
@@ -68,7 +71,8 @@ class ReferencesHandler<T extends DBModel> {
   }
 
   void _notifyListeners() {
-    final List<ValueChanged<List<T>>> localListeners = List<ValueChanged<List<T>>>.from(_listeners);
+    final List<ValueChanged<List<T>>> localListeners =
+        List<ValueChanged<List<T>>>.from(_listeners);
     for (ValueChanged<List<T>> listener in localListeners) {
       try {
         if (_listeners.contains(listener)) {
@@ -79,7 +83,8 @@ class ReferencesHandler<T extends DBModel> {
           exception: exception,
           stack: stack,
           library: 'fcode_bloc',
-          context: ErrorDescription('while notifying listeners for $runtimeType'),
+          context:
+              ErrorDescription('while notifying listeners for $runtimeType'),
           informationCollector: () sync* {
             yield DiagnosticsProperty<ReferencesHandler>(
               'The $runtimeType notifying listeners was',

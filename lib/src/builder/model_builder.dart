@@ -9,7 +9,12 @@ class ModelBuilder<T extends DBModel> extends StatefulWidget {
   final Widget Function(BuildContext, T) builder;
   final bool Function(T previous, T current) condition;
 
-  ModelBuilder({Key key, @required this.model, @required this.repository, @required this.builder, this.condition})
+  ModelBuilder(
+      {Key key,
+      @required this.model,
+      @required this.repository,
+      @required this.builder,
+      this.condition})
       : super(key: key);
 
   @override
@@ -46,7 +51,8 @@ class _ModelBuilderState<T extends DBModel> extends State<ModelBuilder<T>> {
   }
 
   void _subscribe() {
-    handler = ReferenceHandler<T>(repository: widget.repository, reference: widget.model.ref);
+    handler = ReferenceHandler<T>(
+        repository: widget.repository, reference: widget.model.ref);
     handler.initialize();
     handler.addListener((state) {
       if (widget.condition?.call(_state, state) ?? true) {

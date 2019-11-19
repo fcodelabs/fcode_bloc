@@ -7,7 +7,8 @@ import 'package:fcode_bloc/src/bloc/ui_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' as _fb;
 
-class BlocListener<B extends BLoC<dynamic, S>, S extends UIModel> extends _fb.BlocListener<B, S> {
+class BlocListener<B extends BLoC<dynamic, S>, S extends UIModel>
+    extends _fb.BlocListener<B, S> {
   const BlocListener({
     Key key,
     @required _fb.BlocWidgetListener<S> listener,

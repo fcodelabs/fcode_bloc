@@ -106,13 +106,15 @@ class BlocSnapshot<A, S> {
   /// `null` if there was no error in the [BLoC].
   final StackTrace stacktrace;
 
-  BlocSnapshot._(this.data, this.preData, this.action, this.error, this.stacktrace);
+  BlocSnapshot._(
+      this.data, this.preData, this.action, this.error, this.stacktrace);
 
   /// Creates a instance of [BlocSnapshot] with the current `State` ([data]), previous
   /// `State` ([preData]) and the `Action` involved in the state change.
   ///
   /// Used when the `State` changes in the [BLoC].
-  BlocSnapshot.fromData(S data, S preData, A action) : this._(data, preData, action, null, null);
+  BlocSnapshot.fromData(S data, S preData, A action)
+      : this._(data, preData, action, null, null);
 
   /// Creates a instance of [BlocSnapshot] with the current `Action` ([action]).
   ///
@@ -122,7 +124,8 @@ class BlocSnapshot<A, S> {
   /// Creates a instance of [BlocSnapshot] with a [error] and a [stacktrace].
   ///
   /// Used when an error occurs inside the [BLoC].
-  BlocSnapshot.fromError(Object error, [stacktrace]) : this._(null, null, null, error, stacktrace);
+  BlocSnapshot.fromError(Object error, [stacktrace])
+      : this._(null, null, null, error, stacktrace);
 
   /// Returns whether this instance was created by raising an error inside the [BLoC].
   bool get hasError => error != null;

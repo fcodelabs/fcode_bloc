@@ -6,7 +6,8 @@ import 'package:bloc/bloc.dart' as _b;
 import 'package:fcode_bloc/src/bloc/ui_model.dart';
 import 'package:flutter/material.dart';
 
-class Transition<Action, State extends UIModel> extends _b.Transition<Action, State> {
+class Transition<Action, State extends UIModel>
+    extends _b.Transition<Action, State> {
   const Transition({
     @required State previousState,
     @required Action action,

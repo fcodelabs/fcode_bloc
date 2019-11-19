@@ -16,10 +16,10 @@ class ByReferencesSpecification implements SpecificationI {
       return Stream.empty();
     }
     final snapshots = <String, DocumentSnapshot>{};
-    final streams = _documentReferences.map<Stream<List<DocumentSnapshot>>>((ref) {
-      return ref
-          .snapshots()
-          .transform(StreamTransformer<DocumentSnapshot, List<DocumentSnapshot>>.fromHandlers(handleData: (data, sink) {
+    final streams =
+        _documentReferences.map<Stream<List<DocumentSnapshot>>>((ref) {
+      return ref.snapshots().transform(StreamTransformer<DocumentSnapshot,
+          List<DocumentSnapshot>>.fromHandlers(handleData: (data, sink) {
         snapshots[data.documentID] = data;
         final values = snapshots.values;
         sink.add(values.toList());

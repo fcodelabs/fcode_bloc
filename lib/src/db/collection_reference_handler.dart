@@ -16,7 +16,8 @@ class CollectionReferenceHandler<T extends DBModel> {
   List<T> _items;
   StreamSubscription _subscription;
 
-  CollectionReferenceHandler({@required this.repository, @required this.reference})
+  CollectionReferenceHandler(
+      {@required this.repository, @required this.reference})
       : assert(repository != null),
         assert(reference != null);
 
@@ -67,7 +68,8 @@ class CollectionReferenceHandler<T extends DBModel> {
   }
 
   void _notifyListeners() {
-    final List<ValueChanged<List<T>>> localListeners = List<ValueChanged<List<T>>>.from(_listeners);
+    final List<ValueChanged<List<T>>> localListeners =
+        List<ValueChanged<List<T>>>.from(_listeners);
     for (ValueChanged<List<T>> listener in localListeners) {
       try {
         if (_listeners.contains(listener)) {
@@ -78,7 +80,8 @@ class CollectionReferenceHandler<T extends DBModel> {
           exception: exception,
           stack: stack,
           library: 'fcode_bloc',
-          context: ErrorDescription('while notifying listeners for $runtimeType'),
+          context:
+              ErrorDescription('while notifying listeners for $runtimeType'),
           informationCollector: () sync* {
             yield DiagnosticsProperty<CollectionReferenceHandler>(
               'The $runtimeType notifying listeners was',

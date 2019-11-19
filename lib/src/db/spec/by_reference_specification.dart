@@ -11,6 +11,8 @@ class ByReferenceSpecification implements SpecificationI {
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
-    return _documentReference.snapshots().map<List<DocumentSnapshot>>((data) => [data]);
+    return _documentReference
+        .snapshots()
+        .map<List<DocumentSnapshot>>((data) => [data]);
   }
 }

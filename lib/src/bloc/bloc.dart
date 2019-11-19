@@ -8,13 +8,15 @@ import 'package:fcode_bloc/src/bloc/ui_model.dart';
 import 'package:fcode_bloc/src/log/log.dart';
 import 'package:flutter/foundation.dart';
 
-abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State> {
+abstract class BLoC<Action, State extends UIModel>
+    extends _b.Bloc<Action, State> {
   final _log = Log("BLoC");
   final _listeners = ObserverList<BlocCallback<Action, State>>();
   final _listenersMap = <String, BlocCallback<Action, State>>{};
   bool _disposed = false;
 
-  void addListener({@required String name, @required BlocCallback<Action, State> listener}) {
+  void addListener(
+      {@required String name, @required BlocCallback<Action, State> listener}) {
     assert(name != null && name.isNotEmpty);
     assert(listener != null);
     removeListener(name: name);
@@ -72,7 +74,8 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
   }
 
   void _notifyListeners(final BlocSnapshot<Action, State> snapshot) {
-    final List<BlocCallback<Action, State>> localListeners = List<BlocCallback<Action, State>>.from(_listeners);
+    final List<BlocCallback<Action, State>> localListeners =
+        List<BlocCallback<Action, State>>.from(_listeners);
     for (BlocCallback<Action, State> listener in localListeners) {
       try {
         if (_listeners.contains(listener)) {
@@ -83,7 +86,8 @@ abstract class BLoC<Action, State extends UIModel> extends _b.Bloc<Action, State
           exception: exception,
           stack: stack,
           library: 'fcode_bloc',
-          context: ErrorDescription('while notifying listeners for $runtimeType'),
+          context:
+              ErrorDescription('while notifying listeners for $runtimeType'),
           informationCollector: () sync* {
             yield DiagnosticsProperty<BLoC>(
               'The $runtimeType notifying listeners was',

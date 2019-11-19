@@ -42,7 +42,8 @@ class ModelListBuilder<T extends DBModel> extends StatefulWidget {
   State<StatefulWidget> createState() => _ModelListBuilderState();
 }
 
-class _ModelListBuilderState<T extends DBModel> extends State<ModelListBuilder<T>> {
+class _ModelListBuilderState<T extends DBModel>
+    extends State<ModelListBuilder<T>> {
   HashSet<T> preModels = HashSet();
   List<Widget> preChildren = [];
 

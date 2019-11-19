@@ -10,6 +10,9 @@ class ByIDSpecification implements SpecificationI {
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
-    return collection.document(_id).snapshots().map<List<DocumentSnapshot>>((snapshot) => [snapshot]);
+    return collection
+        .document(_id)
+        .snapshots()
+        .map<List<DocumentSnapshot>>((snapshot) => [snapshot]);
   }
 }

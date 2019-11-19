@@ -13,7 +13,11 @@ class TextStartWithSpecification extends SpecificationI {
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
-    final query = collection.orderBy(field).startAt([containText]).endAt([containText + '\uf8ff']);
-    return query.snapshots().map<List<DocumentSnapshot>>((data) => data.documents);
+    final query = collection
+        .orderBy(field)
+        .startAt([containText]).endAt([containText + '\uf8ff']);
+    return query
+        .snapshots()
+        .map<List<DocumentSnapshot>>((data) => data.documents);
   }
 }

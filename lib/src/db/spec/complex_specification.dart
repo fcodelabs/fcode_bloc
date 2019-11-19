@@ -17,7 +17,9 @@ class ComplexSpecification implements SpecificationI {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return query.snapshots().map<List<DocumentSnapshot>>((data) => data.documents);
+    return query
+        .snapshots()
+        .map<List<DocumentSnapshot>>((data) => data.documents);
   }
 }
 

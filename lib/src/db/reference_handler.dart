@@ -65,7 +65,8 @@ class ReferenceHandler<T extends DBModel> {
   }
 
   void _notifyListeners() {
-    final List<ValueChanged<T>> localListeners = List<ValueChanged<T>>.from(_listeners);
+    final List<ValueChanged<T>> localListeners =
+        List<ValueChanged<T>>.from(_listeners);
     for (ValueChanged<T> listener in localListeners) {
       try {
         if (_listeners.contains(listener)) {
@@ -76,7 +77,8 @@ class ReferenceHandler<T extends DBModel> {
           exception: exception,
           stack: stack,
           library: 'fcode_bloc',
-          context: ErrorDescription('while notifying listeners for $runtimeType'),
+          context:
+              ErrorDescription('while notifying listeners for $runtimeType'),
           informationCollector: () sync* {
             yield DiagnosticsProperty<ReferenceHandler>(
               'The $runtimeType notifying listeners was',

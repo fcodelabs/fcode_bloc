@@ -48,6 +48,7 @@ abstract class Algo {
       } on PlatformException {
         _log.e('Failed to get platform version');
       }
+      _log.i('Device Name: $deviceName, deviceVersion: $deviceVersion, identifier: $identifier');
 
       final String key = identifier;
       _deviceID = sha512.convert(utf8.encode(key)).toString();

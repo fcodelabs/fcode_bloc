@@ -1,3 +1,9 @@
+## [0.3.8] - Remove close() from DB and UI Models
+`close()` is there to dispose any db connections or streams when the
+model is not using. But models should not depend on anything in the code.
+So this was removed.
+
+
 ## [0.3.7] - Update dependencies to the newest version
 
 ## [0.3.6] - Update dependencies to the newest version

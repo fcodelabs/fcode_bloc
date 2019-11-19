@@ -1,5 +1,6 @@
-# Fcode Labs MPV Project
+# Fcode Labs BLoC architecture
 
-This document explains about the MVP architecture which is followed by Fcode Labs.
+This document explains about the BLoC architecture which is 
+followed by Fcode Labs for their internal projects.
 
 

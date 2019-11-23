@@ -1,4 +1,12 @@
+## [0.4.0] - Remove all dependencies from flutter_bloc and bloc 
+by @felangel
+
+As all the previously mission features are already there in 
+flutter_bloc, this package removes all the dependencies from it.
+For BLoC, use that package.
+
 ## [0.3.8] - Remove close() from DB and UI Models
+
 `close()` is there to dispose any db connections or streams when the
 model is not using. But models should not depend on anything in the code.
 So this was removed.

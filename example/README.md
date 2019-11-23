@@ -1,1 +1,0 @@
-Basic example for using only the `BLoC` is given in `main.dart`.

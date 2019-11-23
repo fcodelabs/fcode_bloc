@@ -1,0 +1,19 @@
+name: example
+description: example
+version: 1.0.0+1
+author: Fcode Labs (PVT) LTD <fcodelabs@gmail.com>
+homepage: https://www.fcodelabs.com
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  fcode_bloc:
+    path: ../
+
+
+flutter:
+  uses-material-design: true

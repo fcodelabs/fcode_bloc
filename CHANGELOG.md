@@ -1,3 +1,5 @@
+## [0.4.2] - Transactions and Batch Writes
+
 ## [0.4.1] - Repository update function changes
 
 Now you can update arrays or update only few fields in a documents

@@ -15,10 +15,7 @@ abstract class FirebaseRepository<T extends DBModel> {
     return parent?.collection(type) ?? Firestore.instance.collection(type);
   }
 
-  Future<void> add(
-      {@required T item,
-      @required String type,
-      DocumentReference parent}) async {
+  Future<void> add({@required T item, @required String type, DocumentReference parent}) async {
     assert(item != null);
     final data = toMap(item);
     if (item.ref == null) {
@@ -27,19 +24,13 @@ abstract class FirebaseRepository<T extends DBModel> {
     item.ref.setData(data);
   }
 
-  Future<void> addList(
-      {@required Iterable<T> items,
-      @required String type,
-      DocumentReference parent}) async {
+  Future<void> addList({@required Iterable<T> items, @required String type, DocumentReference parent}) async {
     for (final item in items) {
       await add(item: item, type: type, parent: parent);
     }
   }
 
-  Stream<List<T>> query(
-      {@required SpecificationI specification,
-      @required String type,
-      DocumentReference parent}) {
+  Stream<List<T>> query({@required SpecificationI specification, @required String type, DocumentReference parent}) {
     assert(specification != null);
     final stream = specification.specify(_merge(type, parent));
     return stream.map<List<T>>((data) {
@@ -60,9 +51,7 @@ abstract class FirebaseRepository<T extends DBModel> {
   }
 
   Future<void> removeList(
-      {@required SpecificationI specification,
-      @required String type,
-      DocumentReference parent}) async {
+      {@required SpecificationI specification, @required String type, DocumentReference parent}) async {
     assert(specification != null);
     final data = await specification.specify(_merge(type, parent)).first;
     for (final item in data) {
@@ -84,7 +73,7 @@ abstract class FirebaseRepository<T extends DBModel> {
     return item.ref.updateData(data);
   }
 
-  Future<void> arrayUpdate({
+  static Future<void> arrayUpdate({
     @required DocumentReference ref,
     @required String field,
     @required List<dynamic> values,
@@ -102,5 +91,16 @@ abstract class FirebaseRepository<T extends DBModel> {
         field: FieldValue.arrayRemove(values),
       });
     }
+  }
+
+  static Future<Map<String, dynamic>> runTransaction({
+    @required TransactionHandler transactionHandler,
+    Duration timeout,
+  }) async {
+    return await Firestore.instance.runTransaction(transactionHandler, timeout: timeout);
+  }
+
+  static WriteBatch getBatch() {
+    return Firestore.instance.batch();
   }
 }

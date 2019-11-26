@@ -21,6 +21,18 @@ class ComplexSpecification implements SpecificationI {
         .snapshots()
         .map<List<DocumentSnapshot>>((data) => data.documents);
   }
+
+  @override
+  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) async {
+    if (_complexWhere == null) {
+      return [];
+    }
+    Query query = collection;
+    for (final cw in _complexWhere) {
+      query = cw.perform(query);
+    }
+    return (await query.getDocuments()).documents;
+  }
 }
 
 abstract class ComplexOperation {

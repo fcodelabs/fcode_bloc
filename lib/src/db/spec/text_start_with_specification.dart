@@ -20,4 +20,12 @@ class TextStartWithSpecification extends SpecificationI {
         .snapshots()
         .map<List<DocumentSnapshot>>((data) => data.documents);
   }
+
+  @override
+  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) async {
+    final query = collection
+        .orderBy(field)
+        .startAt([containText]).endAt([containText + '\uf8ff']);
+    return (await query.getDocuments()).documents;
+  }
 }

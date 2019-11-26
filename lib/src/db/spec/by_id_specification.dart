@@ -15,4 +15,9 @@ class ByIDSpecification implements SpecificationI {
         .snapshots()
         .map<List<DocumentSnapshot>>((snapshot) => [snapshot]);
   }
+
+  @override
+  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) async {
+    return [await collection.document(_id).get()];
+  }
 }

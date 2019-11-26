@@ -45,6 +45,19 @@ abstract class FirebaseRepository<T extends DBModel> {
     });
   }
 
+  Future<List<T>> querySingle({@required SpecificationI specification, @required String type, DocumentReference parent}) async {
+    assert(specification != null);
+    final snapshots = await specification.specifySingle(_merge(type, parent));
+    final items = <T>[];
+    snapshots.forEach((snapshot) {
+      final item = fromSnapshot(snapshot);
+      if (item != null) {
+        items.add(item);
+      }
+    });
+    return items;
+  }
+
   Future<void> remove({@required T item}) async {
     assert(item != null);
     await item.ref?.delete();

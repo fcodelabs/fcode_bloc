@@ -28,4 +28,9 @@ class ByReferencesSpecification implements SpecificationI {
 
     return MergeStream(streams).asBroadcastStream();
   }
+
+  @override
+  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) {
+    throw("Single Querrying not posible with References Specification as this class is Deprecated");
+  }
 }

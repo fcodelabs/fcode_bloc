@@ -3,6 +3,8 @@ import 'package:fcode_bloc/src/db/db_model.dart';
 import 'package:fcode_bloc/src/db/specification.dart';
 import 'package:flutter/material.dart';
 
+typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
+
 abstract class FirebaseRepository<T extends DBModel> {
   T fromSnapshot(DocumentSnapshot snapshot);
 
@@ -13,10 +15,7 @@ abstract class FirebaseRepository<T extends DBModel> {
     return parent?.collection(type) ?? Firestore.instance.collection(type);
   }
 
-  Future<void> add(
-      {@required T item,
-      @required String type,
-      DocumentReference parent}) async {
+  Future<void> add({@required T item, @required String type, DocumentReference parent}) async {
     assert(item != null);
     final data = toMap(item);
     if (item.ref == null) {
@@ -25,19 +24,13 @@ abstract class FirebaseRepository<T extends DBModel> {
     item.ref.setData(data);
   }
 
-  Future<void> addList(
-      {@required Iterable<T> items,
-      @required String type,
-      DocumentReference parent}) async {
+  Future<void> addList({@required Iterable<T> items, @required String type, DocumentReference parent}) async {
     for (final item in items) {
       await add(item: item, type: type, parent: parent);
     }
   }
 
-  Stream<List<T>> query(
-      {@required SpecificationI specification,
-      @required String type,
-      DocumentReference parent}) {
+  Stream<List<T>> query({@required SpecificationI specification, @required String type, DocumentReference parent}) {
     assert(specification != null);
     final stream = specification.specify(_merge(type, parent));
     return stream.map<List<T>>((data) {
@@ -58,9 +51,7 @@ abstract class FirebaseRepository<T extends DBModel> {
   }
 
   Future<void> removeList(
-      {@required SpecificationI specification,
-      @required String type,
-      DocumentReference parent}) async {
+      {@required SpecificationI specification, @required String type, DocumentReference parent}) async {
     assert(specification != null);
     final data = await specification.specify(_merge(type, parent)).first;
     for (final item in data) {
@@ -68,15 +59,37 @@ abstract class FirebaseRepository<T extends DBModel> {
     }
   }
 
-  Future<void> update(
-      {@required T item,
-      @required String type,
-      DocumentReference parent}) async {
+  Future<void> update({
+    @required T item,
+    @required String type,
+    DocumentReference parent,
+    MapperCallback<T> mapper,
+  }) async {
     assert(item != null);
-    final data = toMap(item);
+    final data = mapper?.call(item) ?? toMap(item);
     if (item.ref == null) {
       return add(item: item, type: type, parent: parent);
     }
     return item.ref.updateData(data);
+  }
+
+  Future<void> arrayUpdate({
+    @required DocumentReference ref,
+    @required String field,
+    @required List<dynamic> values,
+    bool add = true,
+  }) async {
+    assert(ref != null);
+    assert(field?.isNotEmpty ?? false);
+    assert(values?.isNotEmpty ?? false);
+    if (add) {
+      return await ref.updateData({
+        field: FieldValue.arrayUnion(values),
+      });
+    } else {
+      return await ref.updateData({
+        field: FieldValue.arrayRemove(values),
+      });
+    }
   }
 }

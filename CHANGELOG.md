@@ -1,5 +1,8 @@
-## [0.4.0] - Remove all dependencies from flutter_bloc and bloc 
-by @felangel
+## [0.4.1] - Repository update function changes
+
+Now you can update arrays or update only few fields in a documents
+
+## [0.4.0] - Remove all dependencies from flutter_bloc and bloc by @felangel
 
 As all the previously mission features are already there in 
 flutter_bloc, this package removes all the dependencies from it.

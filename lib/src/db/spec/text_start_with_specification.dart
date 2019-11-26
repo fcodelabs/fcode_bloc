@@ -22,7 +22,9 @@ class TextStartWithSpecification extends SpecificationI {
   }
 
   @override
-  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) async {
+  Future<List<DocumentSnapshot>> specifySingle(
+    CollectionReference collection,
+  ) async {
     final query = collection
         .orderBy(field)
         .startAt([containText]).endAt([containText + '\uf8ff']);

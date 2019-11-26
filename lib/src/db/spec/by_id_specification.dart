@@ -17,7 +17,9 @@ class ByIDSpecification implements SpecificationI {
   }
 
   @override
-  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) async {
+  Future<List<DocumentSnapshot>> specifySingle(
+    CollectionReference collection,
+  ) async {
     return [await collection.document(_id).get()];
   }
 }

@@ -23,7 +23,9 @@ class ComplexSpecification implements SpecificationI {
   }
 
   @override
-  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) async {
+  Future<List<DocumentSnapshot>> specifySingle(
+    CollectionReference collection,
+  ) async {
     if (_complexWhere == null) {
       return [];
     }

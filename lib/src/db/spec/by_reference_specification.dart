@@ -18,6 +18,6 @@ class ByReferenceSpecification implements SpecificationI {
 
   @override
   Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection) {
-    throw("Single Querrying not posible with Reference Specification as this class is Deprecated");
+    throw ("Single Querrying not posible with Reference Specification as this class is Deprecated");
   }
 }

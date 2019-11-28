@@ -14,10 +14,10 @@ class ReferencesHandler<T extends DBModel> {
   final List<T> _items;
   final _init = Completer();
 
-  ReferencesHandler(
-      {@required FirebaseRepository<T> repository,
-      List<DocumentReference> references})
-      : assert(repository != null),
+  ReferencesHandler({
+    @required FirebaseRepository<T> repository,
+    List<DocumentReference> references,
+  })  : assert(repository != null),
         assert(references != null),
         _items = List(references.length) {
     _initFill(repository, references);

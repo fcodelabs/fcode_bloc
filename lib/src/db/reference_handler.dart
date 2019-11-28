@@ -15,8 +15,10 @@ class ReferenceHandler<T extends DBModel> {
   T _item;
   StreamSubscription _subscription;
 
-  ReferenceHandler({@required this.repository, @required this.reference})
-      : assert(repository != null),
+  ReferenceHandler({
+    @required this.repository,
+    @required this.reference,
+  })  : assert(repository != null),
         assert(reference != null);
 
   Future<void> initialize() async {

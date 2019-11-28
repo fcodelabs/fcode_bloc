@@ -15,9 +15,10 @@ class CollectionReferenceHandler<T extends DBModel> {
   List<T> _items;
   StreamSubscription _subscription;
 
-  CollectionReferenceHandler(
-      {@required this.repository, @required this.reference})
-      : assert(repository != null),
+  CollectionReferenceHandler({
+    @required this.repository,
+    @required this.reference,
+  })  : assert(repository != null),
         assert(reference != null);
 
   Future<void> initialize() async {

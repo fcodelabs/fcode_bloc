@@ -10,7 +10,6 @@ import 'package:rxdart/rxdart.dart';
 class CollectionReferenceHandler<T extends DBModel> {
   FirebaseRepository<T> repository;
   final CollectionReference reference;
-  final _listeners = ObserverList<ValueChanged<List<T>>>();
   final _behaviorSubject = BehaviorSubject<List<T>>();
   bool _init = false;
   List<T> _items;
@@ -32,7 +31,6 @@ class CollectionReferenceHandler<T extends DBModel> {
         return repository.fromSnapshot(document);
       }).toList(growable: false);
       _behaviorSubject.add(_items);
-      _notifyListeners();
       if (!completer.isCompleted) {
         completer.complete();
       }
@@ -52,45 +50,8 @@ class CollectionReferenceHandler<T extends DBModel> {
     return _items;
   }
 
-  Stream<List<T>> stream() {
+  Stream<List<T>> get stream {
     initialize();
-    return _behaviorSubject.stream;
-  }
-
-  void addListener(ValueChanged<List<T>> listener) {
-    assert(listener != null);
-    _listeners.add(listener);
-  }
-
-  void removeListener(ValueChanged<List<T>> listener) {
-    assert(listener != null);
-    _listeners.remove(listener);
-  }
-
-  void _notifyListeners() {
-    final List<ValueChanged<List<T>>> localListeners =
-        List<ValueChanged<List<T>>>.from(_listeners);
-    for (ValueChanged<List<T>> listener in localListeners) {
-      try {
-        if (_listeners.contains(listener)) {
-          listener(_items);
-        }
-      } catch (exception, stack) {
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: exception,
-          stack: stack,
-          library: 'fcode_bloc',
-          context:
-              ErrorDescription('while notifying listeners for $runtimeType'),
-          informationCollector: () sync* {
-            yield DiagnosticsProperty<CollectionReferenceHandler>(
-              'The $runtimeType notifying listeners was',
-              this,
-              style: DiagnosticsTreeStyle.errorProperty,
-            );
-          },
-        ));
-      }
-    }
+    return _behaviorSubject;
   }
 }

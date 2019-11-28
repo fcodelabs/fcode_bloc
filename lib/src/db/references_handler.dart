@@ -10,7 +10,6 @@ import 'package:rxdart/rxdart.dart';
 
 class ReferencesHandler<T extends DBModel> {
   final handlers = <ReferenceHandler>[];
-  final _listeners = ObserverList<ValueChanged<List<T>>>();
   final _behaviorSubject = BehaviorSubject<List<T>>();
   final List<T> _items;
   final _init = Completer();
@@ -39,7 +38,7 @@ class ReferencesHandler<T extends DBModel> {
         reference: ref,
       );
       _items[i] = await handler.request();
-      handler.addListener((_) => _updateList(i));
+      handler.stream.listen((_) => _updateList(i));
       handlers.add(handler);
     }
     _init.complete();
@@ -47,7 +46,6 @@ class ReferencesHandler<T extends DBModel> {
 
   Future<void> _updateList(i) async {
     _items[i] = await handlers[i].request();
-    _notifyListeners();
     _behaviorSubject.add(_items);
   }
 
@@ -56,44 +54,7 @@ class ReferencesHandler<T extends DBModel> {
     return _items;
   }
 
-  Stream<List<T>> stream() {
-    return _behaviorSubject.stream;
-  }
-
-  void addListener(ValueChanged<List<T>> listener) {
-    assert(listener != null);
-    _listeners.add(listener);
-  }
-
-  void removeListener(ValueChanged<List<T>> listener) {
-    assert(listener != null);
-    _listeners.remove(listener);
-  }
-
-  void _notifyListeners() {
-    final List<ValueChanged<List<T>>> localListeners =
-        List<ValueChanged<List<T>>>.from(_listeners);
-    for (ValueChanged<List<T>> listener in localListeners) {
-      try {
-        if (_listeners.contains(listener)) {
-          listener(_items);
-        }
-      } catch (exception, stack) {
-        FlutterError.reportError(FlutterErrorDetails(
-          exception: exception,
-          stack: stack,
-          library: 'fcode_bloc',
-          context:
-              ErrorDescription('while notifying listeners for $runtimeType'),
-          informationCollector: () sync* {
-            yield DiagnosticsProperty<ReferencesHandler>(
-              'The $runtimeType notifying listeners was',
-              this,
-              style: DiagnosticsTreeStyle.errorProperty,
-            );
-          },
-        ));
-      }
-    }
+  Stream<List<T>> get stream {
+    return _behaviorSubject;
   }
 }

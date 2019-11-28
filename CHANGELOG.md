@@ -1,6 +1,12 @@
-## [0.4.3] 
+## [0.4.4] 
 
-* Query for single values with Futures
+* ByReference and ByReferences specifications were removed
+* Remove all listeners
+
+If you want to listen to something, use provided stream. Old listeners
+are not available now.
+
+## [0.4.3] - Query for single values with Futures
 
 ## [0.4.2] - Transactions and Batch Writes
 

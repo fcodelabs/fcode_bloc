@@ -1,4 +1,7 @@
-## [0.4.3] - Query for single values with Futures
+## [0.4.3] 
+
+* Query for single values with Futures
+* `none` as a variable in `DBModel`s
 
 ## [0.4.2] - Transactions and Batch Writes
 

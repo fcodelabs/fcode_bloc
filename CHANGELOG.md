@@ -2,6 +2,7 @@
 
 * ByReference and ByReferences specifications were removed
 * Remove all listeners
+* Remove collection reference handler
 
 If you want to listen to something, use provided stream. Old listeners
 are not available now.

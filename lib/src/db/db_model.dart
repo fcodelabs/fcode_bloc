@@ -6,7 +6,7 @@ abstract class DBModel {
   DBModel({this.ref});
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is DBModel) {
       return other.ref?.path == this.ref?.path;
     }

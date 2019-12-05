@@ -26,7 +26,7 @@ class ReferenceHandler<T extends DBModel> {
       return;
     }
     final completer = Completer();
-    _subscription?.cancel();
+    await _subscription?.cancel();
     _subscription = reference.snapshots().listen((snapshot) {
       _item = repository.fromSnapshot(snapshot);
       _behaviorSubject.add(_item);
@@ -39,9 +39,9 @@ class ReferenceHandler<T extends DBModel> {
   }
 
   @mustCallSuper
-  void close() {
-    _subscription?.cancel();
-    _behaviorSubject.close();
+  Future<void> close() async {
+    await _subscription?.cancel();
+    await _behaviorSubject.close();
   }
 
   Future<T> request() async {

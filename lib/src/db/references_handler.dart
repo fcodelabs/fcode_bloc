@@ -11,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 class ReferencesHandler<T extends DBModel> {
   final handlers = <ReferenceHandler>[];
   final _behaviorSubject = BehaviorSubject<List<T>>();
+  final _subscriptions = <StreamSubscription>[];
   final List<T> _items;
   final _init = Completer();
 
@@ -24,9 +25,10 @@ class ReferencesHandler<T extends DBModel> {
   }
 
   @mustCallSuper
-  void close() {
-    handlers.forEach((handler) => handler.close());
-    _behaviorSubject.close();
+  Future<void> close() async {
+    for (final h in handlers) await h.close();
+    for (final s in _subscriptions) await s.cancel();
+    await _behaviorSubject.close();
   }
 
   Future<void> _initFill(FirebaseRepository<T> repository,
@@ -38,7 +40,7 @@ class ReferencesHandler<T extends DBModel> {
         reference: ref,
       );
       _items[i] = await handler.request();
-      handler.stream.listen((_) => _updateList(i));
+      _subscriptions.add(handler.stream.listen((_) => _updateList(i)));
       handlers.add(handler);
     }
     _init.complete();

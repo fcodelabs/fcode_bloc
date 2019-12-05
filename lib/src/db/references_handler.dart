@@ -25,8 +25,8 @@ class ReferencesHandler<T extends DBModel> {
 
   @mustCallSuper
   void close() {
-    _behaviorSubject.close();
     handlers.forEach((handler) => handler.close());
+    _behaviorSubject.close();
   }
 
   Future<void> _initFill(FirebaseRepository<T> repository,

@@ -23,9 +23,7 @@ class ComplexSpecification implements SpecificationI {
   }
 
   @override
-  Future<List<DocumentSnapshot>> specifySingle(
-    CollectionReference collection,
-  ) async {
+  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection,) async {
     if (_complexWhere == null) {
       return [];
     }
@@ -72,16 +70,19 @@ class ComplexWhere implements ComplexOperation {
   final dynamic isGreaterThan;
   final dynamic isGreaterThanOrEqualTo;
   final dynamic arrayContains;
+  final List arrayContainsAny;
+  final List whereIn;
   bool isNull;
 
-  ComplexWhere(
-    this._field, {
+  ComplexWhere(this._field, {
     this.isEqualTo,
     this.isLessThan,
     this.isLessThanOrEqualTo,
     this.isGreaterThan,
     this.isGreaterThanOrEqualTo,
     this.arrayContains,
+    this.arrayContainsAny,
+    this.whereIn,
     bool isNull = false,
   }) {
     if (isNull) {
@@ -99,6 +100,8 @@ class ComplexWhere implements ComplexOperation {
       isGreaterThan: isGreaterThan,
       isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
       arrayContains: arrayContains,
+      arrayContainsAny: arrayContainsAny,
+      whereIn: whereIn,
       isNull: isNull,
     );
   }

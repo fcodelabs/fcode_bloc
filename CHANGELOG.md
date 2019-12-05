@@ -1,3 +1,7 @@
+## [0.4.6]
+
+* Minor bug fixes
+
 ## [0.4.5]
 
 * Update dependencies

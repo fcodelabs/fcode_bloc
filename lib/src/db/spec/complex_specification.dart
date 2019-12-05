@@ -23,7 +23,9 @@ class ComplexSpecification implements SpecificationI {
   }
 
   @override
-  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection,) async {
+  Future<List<DocumentSnapshot>> specifySingle(
+    CollectionReference collection,
+  ) async {
     if (_complexWhere == null) {
       return [];
     }
@@ -74,7 +76,8 @@ class ComplexWhere implements ComplexOperation {
   final List whereIn;
   bool isNull;
 
-  ComplexWhere(this._field, {
+  ComplexWhere(
+    this._field, {
     this.isEqualTo,
     this.isLessThan,
     this.isLessThanOrEqualTo,

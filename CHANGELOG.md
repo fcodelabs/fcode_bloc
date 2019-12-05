@@ -1,3 +1,8 @@
+## [0.4.5]
+
+* Update dependencies
+* Minor bug fixes and document updates
+
 ## [0.4.4] 
 
 * ByReference and ByReferences specifications were removed

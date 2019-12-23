@@ -1,3 +1,5 @@
+## [0.4.7] - Update dependencies  to the latest version
+
 ## [0.4.6]
 
 * Minor bug fixes

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+@Deprecated("Use [FirebaseRepository.transform] instead")
 class ReferenceHandler<T extends DBModel> {
   FirebaseRepository<T> repository;
   final DocumentReference reference;

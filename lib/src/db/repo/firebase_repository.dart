@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fcode_bloc/src/db/db_model.dart';
 import 'package:fcode_bloc/src/db/specification.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
 
@@ -105,6 +106,29 @@ abstract class FirebaseRepository<T extends DBModel> {
     return item.ref.updateData(data);
   }
 
+  Stream<T> transform({
+    @required DocumentReference ref,
+  }) {
+    return ref.snapshots().map<T>((snapshot) {
+      return fromSnapshot(snapshot);
+    });
+  }
+
+  Future<T> fetch({
+    @required DocumentReference ref,
+  }) async {
+    final snapshot = await ref.get();
+    return fromSnapshot(snapshot);
+  }
+
+  Stream<List<T>> multiTransform({
+    @required Iterable<DocumentReference> refs,
+  }) {
+    return ZipStream.list(refs.map<Stream<T>>(
+      (ref) => transform(ref: ref),
+    ));
+  }
+
   static Future<void> arrayUpdate({
     @required DocumentReference ref,
     @required String field,
@@ -129,8 +153,10 @@ abstract class FirebaseRepository<T extends DBModel> {
     @required TransactionHandler transactionHandler,
     Duration timeout,
   }) async {
-    return await Firestore.instance
-        .runTransaction(transactionHandler, timeout: timeout);
+    return await Firestore.instance.runTransaction(
+      transactionHandler,
+      timeout: timeout,
+    );
   }
 
   static WriteBatch getBatch() {

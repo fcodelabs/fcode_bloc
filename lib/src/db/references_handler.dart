@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+@Deprecated("Use [FirebaseRepository.multiTransform] instead")
 class ReferencesHandler<T extends DBModel> {
   final handlers = <ReferenceHandler>[];
   final _behaviorSubject = BehaviorSubject<List<T>>();

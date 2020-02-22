@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/src/db/specification.dart';
+
+import '../specification.dart';
 
 class TextStartWithSpecification extends SpecificationI {
   final String field;
@@ -15,7 +16,7 @@ class TextStartWithSpecification extends SpecificationI {
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
     final query = collection
         .orderBy(field)
-        .startAt([containText]).endAt([containText + '\uf8ff']);
+        .startAt([containText]).endAt(['$containText\uf8ff']);
     return query
         .snapshots()
         .map<List<DocumentSnapshot>>((data) => data.documents);
@@ -27,7 +28,7 @@ class TextStartWithSpecification extends SpecificationI {
   ) async {
     final query = collection
         .orderBy(field)
-        .startAt([containText]).endAt([containText + '\uf8ff']);
+        .startAt([containText]).endAt(['$containText\uf8ff']);
     return (await query.getDocuments()).documents;
   }
 }

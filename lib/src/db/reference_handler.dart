@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/src/db/db_model.dart';
-import 'package:fcode_bloc/src/db/repo/firebase_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+
+import 'db_model.dart';
+import 'repo/firebase_repository.dart';
 
 @Deprecated("Use [FirebaseRepository.transform] instead")
 class ReferenceHandler<T extends DBModel> {

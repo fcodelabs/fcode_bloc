@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/src/db/specification.dart';
 
-@Deprecated("Create a DocumentReference with the `id` and use [FirebaseRepository.transform] instead of querying. Use fetch for Futures.")
+import '../specification.dart';
+
+@Deprecated("Create a DocumentReference with the `id` and "
+    "use [FirebaseRepository.transform] instead of querying. "
+    "Use [FirebaseRepository.fetch] for Futures.")
 class ByIDSpecification implements SpecificationI {
   final String _id;
 

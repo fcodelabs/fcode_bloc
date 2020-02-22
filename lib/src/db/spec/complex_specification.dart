@@ -1,18 +1,16 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/src/db/specification.dart';
+
+import '../specification.dart';
 
 class ComplexSpecification implements SpecificationI {
-  List<ComplexOperation> _complexWhere;
+  final List<ComplexOperation> _complexWhere;
 
   ComplexSpecification(this._complexWhere) : assert(_complexWhere != null);
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
-    if (_complexWhere == null) {
-      return Stream<List<DocumentSnapshot>>.empty();
-    }
     Query query = collection;
     for (final cw in _complexWhere) {
       query = cw.perform(query);
@@ -26,9 +24,6 @@ class ComplexSpecification implements SpecificationI {
   Future<List<DocumentSnapshot>> specifySingle(
     CollectionReference collection,
   ) async {
-    if (_complexWhere == null) {
-      return [];
-    }
     Query query = collection;
     for (final cw in _complexWhere) {
       query = cw.perform(query);
@@ -38,6 +33,8 @@ class ComplexSpecification implements SpecificationI {
 }
 
 abstract class ComplexOperation {
+  ComplexOperation._();
+
   Query perform(Query query);
 }
 

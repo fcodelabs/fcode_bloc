@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/src/db/db_model.dart';
-import 'package:fcode_bloc/src/db/reference_handler.dart';
-import 'package:fcode_bloc/src/db/repo/firebase_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'db_model.dart';
+import 'reference_handler.dart';
+import 'repo/firebase_repository.dart';
+
 @Deprecated("Use [FirebaseRepository.multiTransform] instead")
 class ReferencesHandler<T extends DBModel> {
-  final handlers = <ReferenceHandler>[];
+  final _handlers = <ReferenceHandler>[];
   final _behaviorSubject = BehaviorSubject<List<T>>();
   final _subscriptions = <StreamSubscription>[];
   final List<T> _items;
@@ -27,14 +28,18 @@ class ReferencesHandler<T extends DBModel> {
 
   @mustCallSuper
   Future<void> close() async {
-    for (final h in handlers) await h.close();
-    for (final s in _subscriptions) await s.cancel();
+    for (final h in _handlers) {
+      await h.close();
+    }
+    for (final s in _subscriptions) {
+      await s.cancel();
+    }
     await _behaviorSubject.close();
   }
 
   Future<void> _initFill(FirebaseRepository<T> repository,
       List<DocumentReference> references) async {
-    for (int i = 0; i < references.length; i++) {
+    for (var i = 0; i < references.length; i++) {
       final ref = references[i];
       final handler = ReferenceHandler(
         repository: repository,
@@ -42,13 +47,13 @@ class ReferencesHandler<T extends DBModel> {
       );
       _items[i] = await handler.request();
       _subscriptions.add(handler.stream.listen((_) => _updateList(i)));
-      handlers.add(handler);
+      _handlers.add(handler);
     }
     _init.complete();
   }
 
   Future<void> _updateList(i) async {
-    _items[i] = await handlers[i].request();
+    _items[i] = await _handlers[i].request();
     _behaviorSubject.add(_items);
   }
 

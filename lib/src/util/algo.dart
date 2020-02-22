@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
-import 'package:fcode_bloc/src/log/log.dart';
 import 'package:flutter/services.dart';
 
+import '../log/log.dart';
+
+/// Have implemented different types of algorithms that is useful.
 abstract class Algo {
   static final _log = Log("Algorithms");
 
@@ -13,11 +15,19 @@ abstract class Algo {
 
   Algo._();
 
+  /// Capitalize the first letters of every words in the given [text].
+  /// Words in [text] should be separated with spaces.
+  ///
+  /// ```dart
+  /// final str = "fcode bloc";
+  /// final ret = Algo.toTitleCase(str);
+  /// print(ret);  // Fcode Bloc
+  /// ```
   static String toTitleCase(final String text) {
     if (text == null) {
       return "";
     }
-    List<String> words = text.toLowerCase().split(" ");
+    var words = text.toLowerCase().split(" ");
     words = words.map((word) {
       if (word.isEmpty) {
         return "";
@@ -27,12 +37,13 @@ abstract class Algo {
     return words.join(" ");
   }
 
+  /// Get a unique ID for the flutter app
   static Future<String> getUdID() async {
     if (_deviceID == null || _deviceID.isEmpty) {
-      String deviceName = "";
-      String deviceVersion = "";
-      String identifier = "";
-      final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+      var deviceName = "";
+      var deviceVersion = "";
+      var identifier = "";
+      final deviceInfoPlugin = DeviceInfoPlugin();
       try {
         if (Platform.isAndroid) {
           var build = await deviceInfoPlugin.androidInfo;
@@ -49,10 +60,12 @@ abstract class Algo {
         _log.e('Failed to get platform version');
       }
       _log.i(
-        'Device Name: $deviceName, deviceVersion: $deviceVersion, identifier: $identifier',
+        'Device Name: $deviceName, '
+        'deviceVersion: $deviceVersion, '
+        'identifier: $identifier',
       );
 
-      final String key = identifier;
+      final key = identifier;
       _deviceID = sha512.convert(utf8.encode(key)).toString();
     }
     return _deviceID;

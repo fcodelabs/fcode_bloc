@@ -9,6 +9,7 @@ export 'src/db/db_model.dart';
 export 'src/db/reference_handler.dart';
 export 'src/db/references_handler.dart';
 export 'src/db/repo/firebase_repository.dart';
+export 'src/db/repo/repository_addon.dart';
 export 'src/db/spec/by_id_specification.dart';
 export 'src/db/spec/complex_specification.dart';
 export 'src/db/spec/text_start_with_specification.dart';

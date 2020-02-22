@@ -1,3 +1,15 @@
+<!--## [0.5.0]-->
+
+<!--* Added Documentation-->
+<!--* Moved some functionality from Repository to RepositoryAddon-->
+<!--* Minor bug fixes and performance improvements-->
+
+## [0.4.8]
+
+* Added Transformers
+* Library updates
+* Minor bug fixes
+
 ## [0.4.7] - Update dependencies  to the latest version
 
 ## [0.4.6]

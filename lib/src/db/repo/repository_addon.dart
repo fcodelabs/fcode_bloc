@@ -40,7 +40,7 @@ class RepositoryAddon<T extends DBModel> {
     @required Iterable<DocumentReference> refs,
   }) {
     return ZipStream.list(refs.map<Stream<T>>(
-          (ref) => transform(ref: ref),
+      (ref) => transform(ref: ref),
     ));
   }
 

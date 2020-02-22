@@ -14,7 +14,6 @@ typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
 /// [FirebaseRepository.toMap] to work with the given type of [DBModel]
 /// {@endtemplate}
 abstract class FirebaseRepository<T extends DBModel> {
-
   /// Returns a [T] (of [DBModel]) when a [snapshot] is given.
   /// Can return null if the [snapshot] is in bad format.
   ///

@@ -18,7 +18,6 @@ import '../../fcode_bloc.dart';
 /// {@endtemplate}
 @immutable
 abstract class DBModel extends Equatable {
-
   /// Store the [DocumentReference] of this [DBModel] which will represent
   /// a document in Firestore. All [DBModel] which is return from
   /// [FirebaseRepository.fromSnapshot] should have a [ref].

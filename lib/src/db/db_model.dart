@@ -29,17 +29,7 @@ abstract class DBModel extends Equatable {
   DBModel({this.ref});
 
   @override
-  bool operator ==(Object other) {
-    if (other is DBModel) {
-      return other.ref?.path == ref?.path;
-    }
-    return false;
-  }
-
-  @override
-  int get hashCode {
-    return ref?.hashCode ?? 0;
-  }
+  List<Object> get props => [ref];
 
   @override
   String toString() {

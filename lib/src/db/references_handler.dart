@@ -9,6 +9,11 @@ import 'db_model.dart';
 import 'reference_handler.dart';
 import 'repo/firebase_repository.dart';
 
+/// {@template refsHandler}
+/// Same as [ReferencesHandler] but this will keep multiple connections
+/// with the firestore documents to obtain [DBModel]s for
+/// each [DocumentReference] in the provided [List].
+/// {@endtemplate}
 @Deprecated("Use [FirebaseRepository.multiTransform] instead")
 class ReferencesHandler<T extends DBModel> {
   final _handlers = <ReferenceHandler>[];
@@ -17,6 +22,7 @@ class ReferencesHandler<T extends DBModel> {
   final List<T> _items;
   final _init = Completer();
 
+  /// {@macro refsHandler}
   ReferencesHandler({
     @required FirebaseRepository<T> repository,
     List<DocumentReference> references,
@@ -26,6 +32,11 @@ class ReferencesHandler<T extends DBModel> {
     _initFill(repository, references);
   }
 
+  /// Release all the resources that were using by the [ReferencesHandler]
+  /// There will be no use of this object after this function has been
+  /// called.
+  ///
+  /// Make sure to close it after the required task is done.
   @mustCallSuper
   Future<void> close() async {
     for (final h in _handlers) {
@@ -57,11 +68,15 @@ class ReferencesHandler<T extends DBModel> {
     _behaviorSubject.add(_items);
   }
 
+  /// Request the latest value of the [List] of [DocumentReference]s
+  /// from Firestore.
   Future<List<T>> request() async {
     await _init.future;
     return _items;
   }
 
+  /// Get a [Stream] of [List] of [DBModel]s which will emmit in
+  /// each time the database changes.
   Stream<List<T>> get stream {
     return _behaviorSubject;
   }

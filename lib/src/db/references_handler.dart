@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'db_model.dart';
+import 'db_model_i.dart';
 import 'reference_handler.dart';
 import 'repo/firebase_repository.dart';
 
@@ -15,7 +15,7 @@ import 'repo/firebase_repository.dart';
 /// each [DocumentReference] in the provided [List].
 /// {@endtemplate}
 @Deprecated("Use [FirebaseRepository.multiTransform] instead")
-class ReferencesHandler<T extends DBModel> {
+class ReferencesHandler<T extends DBModelI> {
   final _handlers = <ReferenceHandler>[];
   final _behaviorSubject = BehaviorSubject<List<T>>();
   final _subscriptions = <StreamSubscription>[];

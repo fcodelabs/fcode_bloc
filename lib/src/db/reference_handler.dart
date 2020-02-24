@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'db_model.dart';
+import 'db_model_i.dart';
 import 'repo/firebase_repository.dart';
 
 /// {@template refHandler}
@@ -24,7 +24,7 @@ import 'repo/firebase_repository.dart';
 /// using it.
 /// {@endtemplate}
 @Deprecated("Use [FirebaseRepository.transform] instead")
-class ReferenceHandler<T extends DBModel> {
+class ReferenceHandler<T extends DBModelI> {
   /// [FirebaseRepository] that will be used to convert [DocumentSnapshot]s
   /// to [DBModel]s
   FirebaseRepository<T> repository;

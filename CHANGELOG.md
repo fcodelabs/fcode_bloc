@@ -1,3 +1,7 @@
+## [0.5.1]
+
+* Provide a interface for DBModel so that it can be used with built_value package
+
 ## [0.5.0]
 
 * Added Documentation

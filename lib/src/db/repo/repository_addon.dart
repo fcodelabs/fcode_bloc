@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../fcode_bloc.dart';
+import '../db_model_i.dart';
+import 'firebase_repository.dart';
 
 /// {@template repo}
 /// Provide additional functionality to a [FirebaseRepository]
 /// {@endtemplate}
-class RepositoryAddon<T extends DBModel> {
+class RepositoryAddon<T extends DBModelI> {
   final FirebaseRepository<T> _repo;
 
   /// {@macro repo}

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 import '../../fcode_bloc.dart';
+import 'db_model_i.dart';
 
 /// {@template model}
 /// A [FirebaseRepository] will return models of this type once data is
@@ -17,7 +18,7 @@ import '../../fcode_bloc.dart';
 /// A simple implementation can be seen in the documentation of [DBModel.clone]
 /// {@endtemplate}
 @immutable
-abstract class DBModel extends Equatable {
+abstract class DBModel extends Equatable implements DBModelI {
   /// Store the [DocumentReference] of this [DBModel] which will represent
   /// a document in Firestore. All [DBModel] which is return from
   /// [FirebaseRepository.fromSnapshot] should have a [ref].

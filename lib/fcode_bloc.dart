@@ -6,6 +6,7 @@ library fcode_bloc;
 
 export 'src/db/cloud_support.dart';
 export 'src/db/db_model.dart';
+export 'src/db/db_model_i.dart';
 export 'src/db/reference_handler.dart';
 export 'src/db/references_handler.dart';
 export 'src/db/repo/firebase_repository.dart';

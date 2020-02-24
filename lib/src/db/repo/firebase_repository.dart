@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../db_model.dart';
+import '../db_model_i.dart';
 import '../specification.dart';
 
 typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
@@ -13,7 +13,7 @@ typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
 /// Should implement [FirebaseRepository.fromSnapshot] and
 /// [FirebaseRepository.toMap] to work with the given type of [DBModel]
 /// {@endtemplate}
-abstract class FirebaseRepository<T extends DBModel> {
+abstract class FirebaseRepository<T extends DBModelI> {
   /// Returns a [T] (of [DBModel]) when a [snapshot] is given.
   /// Can return null if the [snapshot] is in bad format.
   ///

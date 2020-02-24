@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 /// Create an object that can interact with cloud firestore.
 class CloudSupport {
-
   /// Call the cloud function named [functionName] with the [params].
   /// Return a [Future] of [HttpsCallableResult]
   Future<HttpsCallableResult> call({

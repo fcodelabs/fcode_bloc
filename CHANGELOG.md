@@ -1,8 +1,9 @@
-<!--## [0.5.0]-->
+## [0.5.0]
 
-<!--* Added Documentation-->
-<!--* Moved some functionality from Repository to RepositoryAddon-->
-<!--* Minor bug fixes and performance improvements-->
+* Added Documentation
+* Moved some functionality from Repository to RepositoryAddon
+* DBModel is now immutable
+* Minor bug fixes and performance improvements
 
 ## [0.4.8]
 

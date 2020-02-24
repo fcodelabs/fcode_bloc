@@ -4,19 +4,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../specification.dart';
 
+/// {@template txtSpec}
+/// To know how to use [SpecificationI], look at [FirebaseRepository.query].
+///
+/// Use to query documents where the text in the given `field` starts
+/// with the given `containText`.
+/// {@endtemplate}
 class TextStartWithSpecification extends SpecificationI {
-  final String field;
-  final String containText;
+  final String _field;
+  final String _containText;
 
-  TextStartWithSpecification(this.field, this.containText)
-      : assert(field != null && field.isNotEmpty),
-        assert(containText != null);
+  /// {@macro txtSpec}
+  TextStartWithSpecification(this._field, this._containText)
+      : assert(_field != null && _field.isNotEmpty),
+        assert(_containText != null);
 
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
     final query = collection
-        .orderBy(field)
-        .startAt([containText]).endAt(['$containText\uf8ff']);
+        .orderBy(_field)
+        .startAt([_containText]).endAt(['$_containText\uf8ff']);
     return query
         .snapshots()
         .map<List<DocumentSnapshot>>((data) => data.documents);
@@ -27,8 +34,8 @@ class TextStartWithSpecification extends SpecificationI {
     CollectionReference collection,
   ) async {
     final query = collection
-        .orderBy(field)
-        .startAt([containText]).endAt(['$containText\uf8ff']);
+        .orderBy(_field)
+        .startAt([_containText]).endAt(['$_containText\uf8ff']);
     return (await query.getDocuments()).documents;
   }
 }

@@ -14,7 +14,7 @@ import '../specification.dart';
 @Deprecated("Create a DocumentReference with the `id` and "
     "use [FirebaseRepository.transform] instead of querying. "
     "Use [FirebaseRepository.fetch] for Futures.")
-class ByIDSpecification implements SpecificationI {
+class ByIDSpecification implements FirebaseSpecificationI {
   final String _id;
 
   /// {@macro idRef}

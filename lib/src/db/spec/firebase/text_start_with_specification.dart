@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../../fcode_bloc.dart';
 import '../specification.dart';
 
 /// {@template txtSpec}
@@ -10,7 +11,7 @@ import '../specification.dart';
 /// Use to query documents where the text in the given `field` starts
 /// with the given `containText`.
 /// {@endtemplate}
-class TextStartWithSpecification extends SpecificationI {
+class TextStartWithSpecification extends FirebaseSpecificationI {
   final String _field;
   final String _containText;
 

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 import '../../../fcode_bloc.dart';
 import 'db_model_i.dart';

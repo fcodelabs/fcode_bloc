@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../../fcode_bloc.dart';
 import '../specification.dart';
 
 /// {@template cmpRef}
@@ -12,7 +13,7 @@ import '../specification.dart';
 /// query that can be generated using the [ComplexOperation]s. Query will be
 /// created according the order in the provided [List].
 /// {@endtemplate}
-class ComplexSpecification implements SpecificationI {
+class ComplexSpecification implements FirebaseSpecificationI {
   final List<ComplexOperation> _complexWhere;
 
   /// {@macro cmpRef}

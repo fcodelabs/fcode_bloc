@@ -1,5 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 /// Create an object that can interact with cloud firestore.
 class CloudSupport {

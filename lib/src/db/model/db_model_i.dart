@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../fcode_bloc.dart';
+import '../../../fcode_bloc.dart';
 
 /// Interface that will provide basic functionality for a [DBModel] that
 /// is used to store a document in Firestore.

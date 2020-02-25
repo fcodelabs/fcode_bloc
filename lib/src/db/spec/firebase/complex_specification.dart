@@ -43,9 +43,8 @@ class ComplexSpecification implements SpecificationI {
 
 /// Provide a interface to generate compound queries inside a
 /// [ComplexSpecification].
+// ignore: one_member_abstracts
 abstract class ComplexOperation {
-  ComplexOperation._();
-
   /// Perform the operation to the provided [query]. This operation
   /// will query data from the provided Firestore [query].
   ///

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fcode_bloc/src/db/spec/firebase/firebase_specification.dart';
 import 'package:flutter/material.dart';
 
-import '../db_model_i.dart';
-import '../specification.dart';
+import '../model/db_model_i.dart';
+import '../spec/specification.dart';
 
 typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
 
@@ -101,7 +102,8 @@ abstract class FirebaseRepository<T extends DBModelI> {
     DocumentReference parent,
   }) {
     assert(specification != null);
-    final stream = specification.specify(_merge(type, parent));
+    final spec = specification as FirebaseSpecificationI;
+    final stream = spec.specify(_merge(type, parent));
     return stream.map<List<T>>((data) {
       final items = <T>[];
       for (final document in data) {
@@ -124,7 +126,8 @@ abstract class FirebaseRepository<T extends DBModelI> {
     DocumentReference parent,
   }) async {
     assert(specification != null);
-    final snapshots = await specification.specifySingle(_merge(type, parent));
+    final spec = specification as FirebaseSpecificationI;
+    final snapshots = await spec.specifySingle(_merge(type, parent));
     final items = <T>[];
     for (final snapshot in snapshots) {
       final item = fromSnapshot(snapshot);
@@ -156,7 +159,8 @@ abstract class FirebaseRepository<T extends DBModelI> {
     DocumentReference parent,
   }) async {
     assert(specification != null);
-    final data = await specification.specifySingle(_merge(type, parent));
+    final spec = specification as FirebaseSpecificationI;
+    final data = await spec.specifySingle(_merge(type, parent));
     final futures = data.map((item) => item.reference.delete());
     await Future.wait(futures);
   }

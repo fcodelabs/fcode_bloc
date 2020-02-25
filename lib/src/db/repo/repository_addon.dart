@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../db_model_i.dart';
+import '../model/db_model_i.dart';
 import 'firebase_repository.dart';
 
 /// {@template repo}

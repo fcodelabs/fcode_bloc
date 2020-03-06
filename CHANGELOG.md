@@ -1,3 +1,9 @@
+## [0.5.2] - March 6, 2020
+
+* Add serializer support for Firebase
+* Reformat Specification Architecture
+* Remove Algo. User `fcode_common` for Algo.
+
 ## [0.5.1]
 
 * Provide a interface for DBModel so that it can be used with built_value package

@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import '../../../fcode_bloc.dart';
 import 'db_model_i.dart';
@@ -17,8 +15,7 @@ import 'db_model_i.dart';
 ///
 /// A simple implementation can be seen in the documentation of [DBModel.clone]
 /// {@endtemplate}
-@immutable
-abstract class DBModel extends Equatable implements DBModelI {
+abstract class DBModel implements DBModelI {
   /// Store the [DocumentReference] of this [DBModel] which will represent
   /// a document in Firestore. All [DBModel] which is return from
   /// [FirebaseRepository.fromSnapshot] should have a [ref].
@@ -28,9 +25,6 @@ abstract class DBModel extends Equatable implements DBModelI {
 
   /// {@macro model}
   DBModel({this.ref});
-
-  @override
-  List<Object> get props => [ref];
 
   @override
   String toString() {

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../fcode_bloc.dart';
 import 'db_model_i.dart';
 
 /// {@template model}

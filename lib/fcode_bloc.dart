@@ -4,19 +4,18 @@
 
 library fcode_bloc;
 
-export 'src/db/cloud_support.dart';
-export 'src/db/model/db_model.dart';
-export 'src/db/model/db_model_i.dart';
-export 'src/db/model/serializer/document_reference_serializer.dart';
-export 'src/db/model/serializer/geo_point_serializer.dart';
-export 'src/db/model/serializer/timestamp_serializer.dart';
-export 'src/db/reference_handler.dart';
-export 'src/db/references_handler.dart';
-export 'src/db/repo/firebase_repository.dart';
-export 'src/db/repo/repository_addon.dart';
-export 'src/db/spec/firebase/by_id_specification.dart';
-export 'src/db/spec/firebase/complex_specification.dart';
-export 'src/db/spec/firebase/firebase_specification.dart';
-export 'src/db/spec/firebase/text_start_with_specification.dart';
-export 'src/db/spec/specification.dart';
-export 'src/util/algo.dart';
+export 'src/cloud_support.dart';
+export 'src/model/db_model.dart';
+export 'src/model/db_model_i.dart';
+export 'src/model/serializer/document_reference_serializer.dart';
+export 'src/model/serializer/geo_point_serializer.dart';
+export 'src/model/serializer/timestamp_serializer.dart';
+export 'src/reference_handler.dart';
+export 'src/references_handler.dart';
+export 'src/repo/firebase_repository.dart';
+export 'src/repo/repository_addon.dart';
+export 'src/spec/firebase/by_id_specification.dart';
+export 'src/spec/firebase/complex_specification.dart';
+export 'src/spec/firebase/firebase_specification.dart';
+export 'src/spec/firebase/text_start_with_specification.dart';
+export 'src/spec/specification.dart';

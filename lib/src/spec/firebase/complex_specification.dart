@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../../fcode_bloc.dart';
 import '../specification.dart';
+import 'firebase_specification.dart';
 
 /// {@template cmpRef}
 /// To know how to use [SpecificationI], look at [FirebaseRepository.query].

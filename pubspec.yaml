@@ -17,8 +17,8 @@ dependencies:
   cloud_functions: ^0.4.2
   rxdart: ^0.23.1
   meta: ^1.1.6
-  built_value: 7.0.9
-  built_collection: 4.3.2
+  built_value: ^7.0.9
+  built_collection: ^4.3.2
 
 dev_dependencies:
   effective_dart: ^1.2.0

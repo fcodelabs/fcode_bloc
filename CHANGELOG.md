@@ -1,4 +1,4 @@
-## [0.5.2] - March 6, 2020
+## [0.5.2] - March 7, 2020
 
 * Add serializer support for Firebase
 * Reformat Specification Architecture

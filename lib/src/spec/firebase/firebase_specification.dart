@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../specification.dart';
 
-
 /// To know how to use [FirebaseSpecificationI],
 /// look at [FirebaseRepository.query].
 ///

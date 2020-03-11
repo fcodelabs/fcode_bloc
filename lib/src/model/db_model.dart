@@ -20,7 +20,7 @@ abstract class DBModel implements DBModelI {
   /// [FirebaseRepository.fromSnapshot] should have a [ref].
   ///
   /// Otherwise can be null.
-  final DocumentReference ref;
+  DocumentReference ref;
 
   /// {@macro model}
   DBModel({this.ref});

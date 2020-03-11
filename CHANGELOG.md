@@ -1,3 +1,8 @@
+### [0.5.3] - March 11, 2020
+
+* Bug fixes in repository
+* DBModel is fully mutable again
+
 ## [0.5.2] - March 7, 2020
 
 * Add serializer support for Firebase

@@ -43,7 +43,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   }) async {
     assert(item != null);
     final data = toMap(item);
-    final ref = item.ref ?? _merge(type, parent).document(item.id);
+    final ref = _merge(type, parent).document(item.id);
     await ref.setData(data);
     return ref;
   }

@@ -1,3 +1,7 @@
+### [0.5.4] - March 12, 2020
+
+* Bug fixes in db model interface
+
 ### [0.5.3] - March 11, 2020
 
 * Bug fixes in repository

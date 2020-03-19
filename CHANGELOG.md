@@ -1,3 +1,7 @@
+### [0.5.5] - March 19, 2020
+
+* Bugfix in Addon
+
 ### [0.5.4] - March 12, 2020
 
 * Bug fixes in db model interface

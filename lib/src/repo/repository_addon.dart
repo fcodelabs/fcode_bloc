@@ -40,7 +40,7 @@ class RepositoryAddon<T extends DBModelI> {
   Stream<List<T>> multiTransform({
     @required Iterable<DocumentReference> refs,
   }) {
-    return ZipStream.list(refs.map<Stream<T>>(
+    return CombineLatestStream.list(refs.map<Stream<T>>(
       (ref) => transform(ref: ref),
     ));
   }

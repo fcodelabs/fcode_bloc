@@ -12,6 +12,7 @@ export 'src/model/serializer/geo_point_serializer.dart';
 export 'src/model/serializer/timestamp_serializer.dart';
 export 'src/reference_handler.dart';
 export 'src/references_handler.dart';
+export 'src/repo/cached_repository.dart';
 export 'src/repo/firebase_repository.dart';
 export 'src/repo/repository_addon.dart';
 export 'src/spec/firebase/by_id_specification.dart';

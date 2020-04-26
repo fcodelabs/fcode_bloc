@@ -29,8 +29,9 @@ class RepositoryAddon<T extends DBModelI> {
   /// latest value in the DB using the given [ref].
   Future<T> fetch({
     @required DocumentReference ref,
+    Source source = Source.serverAndCache,
   }) async {
-    final snapshot = await ref.get();
+    final snapshot = await ref.get(source: source);
     return _repo.fromSnapshot(snapshot);
   }
 
@@ -49,8 +50,9 @@ class RepositoryAddon<T extends DBModelI> {
   /// latest values in the DB using the given [refs].
   Future<List<T>> multiFetch({
     @required Iterable<DocumentReference> refs,
+    Source source = Source.serverAndCache,
   }) {
-    final futures = refs.map((ref) => fetch(ref: ref));
+    final futures = refs.map((ref) => fetch(ref: ref, source: source));
     return Future.wait(futures);
   }
 

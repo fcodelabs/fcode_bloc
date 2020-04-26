@@ -1,3 +1,9 @@
+### [0.5.6] - April 26, 2020
+
+* Update dependencies
+* Add source type selection in Firebase Specifications
+* Add cached Repositories
+
 ### [0.5.5] - March 19, 2020
 
 * Bugfix in Addon

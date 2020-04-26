@@ -37,6 +37,7 @@ class TextStartWithSpecification extends FirebaseSpecificationI {
     final query = collection
         .orderBy(_field)
         .startAt([_containText]).endAt(['$_containText\uf8ff']);
-    return (await query.getDocuments()).documents;
+    return (await query.getDocuments(source: source ?? Source.serverAndCache))
+        .documents;
   }
 }

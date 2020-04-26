@@ -14,7 +14,7 @@ import 'firebase_specification.dart';
 @Deprecated("Create a DocumentReference with the `id` and "
     "use [FirebaseRepository.transform] instead of querying. "
     "Use [FirebaseRepository.fetch] for Futures.")
-class ByIDSpecification implements FirebaseSpecificationI {
+class ByIDSpecification extends FirebaseSpecificationI {
   final String _id;
 
   /// {@macro idRef}
@@ -32,6 +32,10 @@ class ByIDSpecification implements FirebaseSpecificationI {
   Future<List<DocumentSnapshot>> specifySingle(
     CollectionReference collection,
   ) async {
-    return [await collection.document(_id).get()];
+    return [
+      await collection
+          .document(_id)
+          .get(source: source ?? Source.serverAndCache)
+    ];
   }
 }

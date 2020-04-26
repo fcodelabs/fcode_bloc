@@ -13,7 +13,7 @@ import 'firebase_specification.dart';
 /// query that can be generated using the [ComplexOperation]s. Query will be
 /// created according the order in the provided [List].
 /// {@endtemplate}
-class ComplexSpecification implements FirebaseSpecificationI {
+class ComplexSpecification extends FirebaseSpecificationI {
   final List<ComplexOperation> _complexWhere;
 
   /// {@macro cmpRef}
@@ -38,7 +38,8 @@ class ComplexSpecification implements FirebaseSpecificationI {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return (await query.getDocuments()).documents;
+    return (await query.getDocuments(source: source ?? Source.serverAndCache))
+        .documents;
   }
 }
 

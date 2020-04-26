@@ -18,4 +18,8 @@ abstract class FirebaseSpecificationI implements SpecificationI {
   /// Same as [FirebaseSpecificationI.specify] but this will return a [Future]
   /// so that it can be used by [FirebaseRepository.querySingle]
   Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection);
+
+  /// Firebase source type to be used in single fetch.
+  /// See documentation on [Source] in Firestore.
+  Source source = Source.serverAndCache;
 }

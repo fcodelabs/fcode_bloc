@@ -1,4 +1,4 @@
-### [0.5.6] - April 26, 2020
+### [0.5.6] - April 27, 2020
 
 * Update dependencies
 * Add source type selection in Firebase Specifications

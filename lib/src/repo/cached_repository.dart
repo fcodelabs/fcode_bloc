@@ -56,7 +56,8 @@ class CachedRepository<T extends DBModelI> {
     @required DocumentReference ref,
   }) {
     return ConcatStream([
-      Stream.fromFuture(_addon.fetch(ref: ref, source: Source.cache)),
+      Stream.fromFuture(_addon.fetch(ref: ref, source: Source.cache))
+          .handleError(() {}),
       _addon.transform(ref: ref),
     ]);
   }
@@ -66,7 +67,8 @@ class CachedRepository<T extends DBModelI> {
     @required Iterable<DocumentReference> refs,
   }) {
     return ConcatStream([
-      Stream.fromFuture(_addon.multiFetch(refs: refs, source: Source.cache)),
+      Stream.fromFuture(_addon.multiFetch(refs: refs, source: Source.cache))
+          .handleError(() {}),
       _addon.multiTransform(refs: refs),
     ]);
   }

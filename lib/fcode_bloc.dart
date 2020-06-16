@@ -4,7 +4,6 @@
 
 library fcode_bloc;
 
-export 'src/cloud_support.dart';
 export 'src/model/db_model.dart';
 export 'src/model/db_model_i.dart';
 export 'src/model/serializer/document_reference_serializer.dart';

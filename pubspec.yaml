@@ -14,7 +14,6 @@ dependencies:
     sdk: flutter
   firebase_core: ^0.4.4+3
   cloud_firestore: ^0.13.5
-  cloud_functions: ^0.4.2+3
   rxdart: ^0.24.0
   meta: ^1.1.8
   built_value: ^7.1.0

@@ -12,15 +12,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.4.4+3
-  cloud_firestore: ^0.13.5
+  firebase_core: ^0.4.5
+  cloud_firestore: ^0.13.6
   rxdart: ^0.24.0
   meta: ^1.1.8
   built_value: ^7.1.0
   built_collection: ^4.3.2
 
 dev_dependencies:
-  effective_dart: ^1.2.1
+  effective_dart: ^1.2.2
   flutter_test:
     sdk: flutter
 

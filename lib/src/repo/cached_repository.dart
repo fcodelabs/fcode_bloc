@@ -4,7 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../fcode_bloc.dart';
+import '../model/db_model_i.dart';
+import '../spec/firebase/firebase_specification.dart';
+import '../spec/specification.dart';
+import 'firebase_repository.dart';
+import 'repository_addon.dart';
 
 /// {@template cachedRepo}
 /// This is a wrapper for `query` method in [FirebaseRepository].

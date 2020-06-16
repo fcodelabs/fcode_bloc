@@ -1,3 +1,9 @@
+### [0.5.7] - June 16, 2020
+
+* Remove cloud support from this plugin
+* Update firebase dependencies
+* Add Specification to pagination
+
 ### [0.5.6] - April 27, 2020
 
 * Update dependencies

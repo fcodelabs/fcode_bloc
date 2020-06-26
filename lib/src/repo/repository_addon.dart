@@ -30,6 +30,21 @@ class RepositoryAddon<T extends DBModelI> {
   Future<T> fetch({
     @required DocumentReference ref,
     Source source = Source.serverAndCache,
+    bool exception = true,
+  }) async {
+    if (exception) {
+      return _fetch(ref: ref, source: source);
+    }
+    try {
+      return _fetch(ref: ref, source: source);
+    } on Exception {
+      return null;
+    }
+  }
+
+  Future<T> _fetch({
+    @required DocumentReference ref,
+    @required Source source,
   }) async {
     final snapshot = await ref.get(source: source);
     return _repo.fromSnapshot(snapshot);
@@ -52,7 +67,11 @@ class RepositoryAddon<T extends DBModelI> {
     @required Iterable<DocumentReference> refs,
     Source source = Source.serverAndCache,
   }) {
-    final futures = refs.map((ref) => fetch(ref: ref, source: source));
+    final futures = refs.map((ref) => fetch(
+          ref: ref,
+          source: source,
+          exception: false,
+        ));
     return Future.wait(futures);
   }
 

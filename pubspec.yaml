@@ -1,7 +1,7 @@
 name: fcode_bloc
 description: Firebase Repository implementation for BLoC. This usses firestore package and expose
   the functions by using the repository design pattern.
-version: 0.5.7
+version: 0.5.8
 repository: https://github.com/fcodelabs/fcode_bloc
 issue_tracker: https://github.com/fcodelabs/fcode_bloc/issues
 homepage: https://www.fcodelabs.com
@@ -13,8 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^0.4.5
-  cloud_firestore: ^0.13.6
-  rxdart: ^0.24.0
+  cloud_firestore: ^0.13.7
+  rxdart: ^0.24.1
   meta: ^1.1.8
   built_value: ^7.1.0
   built_collection: ^4.3.2

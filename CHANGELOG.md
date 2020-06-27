@@ -1,3 +1,10 @@
+### [0.5.8] - June 28, 2020
+
+* Add a caching module that uses Firestore cache
+* Addon can support fetch from cache without giving exceptions
+* Documentation updates
+* Firestore version update
+
 ### [0.5.7] - June 16, 2020
 
 * Remove cloud support from this plugin

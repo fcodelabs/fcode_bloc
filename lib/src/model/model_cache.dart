@@ -1,6 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fcode_bloc/fcode_bloc.dart';
+import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import '../repo/repository_addon.dart';
 import 'db_model_i.dart';
 
 /// {@template model_cache}
@@ -33,55 +36,9 @@ import 'db_model_i.dart';
 /// them in models.
 /// {@endtemplate}
 class ModelCache<T extends DBModelI> {
-  static const _instances = <String, ModelCache>{};
-
-  /// {@macro model_cache}
-  factory ModelCache() {
-    final name = T.toString();
-    if (_instances[name] == null) {
-      _instances[name] = ModelCache._(name);
-    }
-    return _instances[name];
-  }
-
-  ModelCache._(String name)
-      : _timeout = ModelCacheSettings._timeouts[name],
-        _addon = ModelCacheSettings._addons[name] {
-    if (_timeout == null || _addon == null) {
-      throw Exception("Cannot find settings for the DBModelI type $name. "
-          "You can set settings for this type using ModelCacheSettings. "
-          "Make sure to use the correct type when calling the setSettings "
-          "function of that class.\n"
-          "Eg: ModelCacheSettings.setSettings(...) is not the correct way "
-          "of adding settings.\n"
-          "To add settings to type User (which extends DBModelI) you can use\n"
-          "Eg: ModelCacheSettings.setSettings<User>(...) \n\n"
-          "If the issue still persists, use our github to create a issue.\n"
-          "https://github.com/fcodelabs/fcode_bloc/issues");
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-
-  final int _timeout;
-  final RepositoryAddon<T> _addon;
-}
-
-/// Used to set settings that can be used in [ModelCache].
-///
-/// [ModelCache] uses the information provided with the [setSettings]
-/// method to get information from the caches. For examples on how to use
-/// this method, read its documentation.
-///
-/// See Also:
-///
-/// [ModelCache] - Use the settings set by this for each [DBModelI]
-/// [RepositoryAddon] - Used to fetch data from [DocumentReference]
-/// [FirebaseRepository] - Used to fetch data from Firestore and wrap
-/// them in models.
-class ModelCacheSettings {
-  static const _addons = <String, RepositoryAddon>{};
-  static const _timeouts = <String, int>{};
+  static final _instances = <String, ModelCache>{};
+  static final _addons = <String, RepositoryAddon>{};
+  static final _timeouts = <String, int>{};
 
   /// Store the settings provided for a specific type of [DBModelI].
   ///
@@ -101,19 +58,112 @@ class ModelCacheSettings {
   ///
   /// // Wrong way of using this function.
   ///
-  /// ModelCacheSettings.setSettings(...);
+  /// ModelCache.setSettings(...);
   ///
   /// // Correct way of using this function.
   ///
-  /// ModelCacheSettings.setSettings<User>(...);
+  /// ModelCache.setSettings<User>(...);
   /// ```
   ///
+  /// Parameter Description
+  ///
+  /// [addon] - An instance of [RepositoryAddon] for this [T]
+  /// [timeout] - Timeout period in minutes which [ModelCache] will re-fetch
+  /// data from Firestore server (Default 60).
   static void setSettings<T extends DBModelI>({
-    RepositoryAddon<T> addon,
-    int timeout,
+    @required RepositoryAddon<T> addon,
+    int timeout = 60,
   }) {
     final name = T.toString();
     _addons[name] = addon;
     _timeouts[name] = timeout;
+  }
+
+  /// {@macro model_cache}
+  factory ModelCache() {
+    final name = T.toString();
+    if (_instances[name] == null) {
+      _instances[name] = ModelCache<T>._();
+    }
+    return _instances[name];
+  }
+
+  ModelCache._()
+      : _timeout = _timeouts[T.toString()],
+        _addon = _addons[T.toString()] {
+    if (_timeout == null || _addon == null) {
+      throw Exception("Cannot find settings for the DBModelI type $T. "
+          "You can set settings for this type using ModelCacheSettings. "
+          "Make sure to use the correct type when calling the setSettings "
+          "function of that class.\n"
+          "Eg: ModelCacheSettings.setSettings(...) is not the correct way "
+          "of adding settings.\n"
+          "To add settings to type User (which extends DBModelI) you can use\n"
+          "Eg: ModelCacheSettings.setSettings<User>(...) \n\n"
+          "If the issue still persists, use our github to create a issue.\n"
+          "https://github.com/fcodelabs/fcode_bloc/issues");
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  final _users = <String, T>{};
+  final _updated = <String, DateTime>{};
+  final int _timeout;
+  final RepositoryAddon<T> _addon;
+
+  /// Get the cached data directly from memory
+  T fromMem(DocumentReference ref) {
+    assert(ref != null);
+    fetch(ref);
+    return _users[ref.path];
+  }
+
+  void _fetch(DocumentReference ref, [Completer completer]) {
+    final diff = _updated[ref.path]?.difference(DateTime.now());
+    if ((diff?.inMinutes?.abs() ?? _timeout) >= _timeout) {
+      _addon.fetch(ref: ref, source: Source.server).then((user) {
+        _users[ref.path] = user;
+        _updated[ref.path] = DateTime.now();
+        completer?.complete();
+      });
+    } else {
+      completer?.complete();
+    }
+  }
+
+  /// Fetch data from
+  /// 1. Memory
+  /// 2. Firebase cache if not available in memory
+  /// 3. Firestore server if not available in cache
+  ///
+  /// in the given order for the given [ref].
+  Future<T> fetch(DocumentReference ref) async {
+    final completer = Completer();
+    _fetch(ref, completer);
+
+    final memUser = _users[ref.path];
+    if (memUser != null) {
+      return memUser;
+    }
+
+    final user = await _addon.fetch(
+      ref: ref,
+      source: Source.cache,
+      exception: false,
+    );
+    _users[ref.path] = user;
+
+    if (user != null) {
+      return user;
+    }
+    await completer.future;
+    return _users[ref.path];
+  }
+
+  /// Same as [fetch] but for multiple list of [DocumentReference]s, [refs]
+  Future<List<T>> multiFetch(Iterable<DocumentReference> refs) async {
+    final usersF = refs.map(fetch);
+    return await Future.wait(usersF);
   }
 }

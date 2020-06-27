@@ -6,6 +6,7 @@ library fcode_bloc;
 
 export 'src/model/db_model.dart';
 export 'src/model/db_model_i.dart';
+export 'src/model/model_cache.dart';
 export 'src/model/serializer/document_reference_serializer.dart';
 export 'src/model/serializer/geo_point_serializer.dart';
 export 'src/model/serializer/timestamp_serializer.dart';

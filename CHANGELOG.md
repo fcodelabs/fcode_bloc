@@ -1,3 +1,7 @@
+### [0.5.9] - July 02, 2020
+
+* Bugfixes in repository addon
+
 ### [0.5.8] - June 28, 2020
 
 * Add a caching module that uses Firestore cache

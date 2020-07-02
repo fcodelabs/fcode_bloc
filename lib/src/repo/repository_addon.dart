@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -36,8 +37,8 @@ class RepositoryAddon<T extends DBModelI> {
       return _fetch(ref: ref, source: source);
     }
     try {
-      return _fetch(ref: ref, source: source);
-    } on Exception {
+      return await _fetch(ref: ref, source: source);
+    } on PlatformException {
       return null;
     }
   }

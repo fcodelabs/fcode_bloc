@@ -166,4 +166,10 @@ class ModelCache<T extends DBModelI> {
     final usersF = refs.map(fetch);
     return await Future.wait(usersF);
   }
+
+  /// Clear memory cache
+  void clearMem() {
+    _items.clear();
+    _updated.clear();
+  }
 }

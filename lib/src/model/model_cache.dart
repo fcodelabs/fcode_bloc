@@ -107,7 +107,7 @@ class ModelCache<T extends DBModelI> {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  final _users = <String, T>{};
+  final _items = <String, T>{};
   final _updated = <String, DateTime>{};
   final int _timeout;
   final RepositoryAddon<T> _addon;
@@ -116,14 +116,14 @@ class ModelCache<T extends DBModelI> {
   T fromMem(DocumentReference ref) {
     assert(ref != null);
     fetch(ref);
-    return _users[ref.path];
+    return _items[ref.path];
   }
 
   void _fetch(DocumentReference ref, [Completer completer]) {
     final diff = _updated[ref.path]?.difference(DateTime.now());
     if ((diff?.inMinutes?.abs() ?? _timeout) >= _timeout) {
-      _addon.fetch(ref: ref, source: Source.server).then((user) {
-        _users[ref.path] = user;
+      _addon.fetch(ref: ref, source: Source.server).then((item) {
+        _items[ref.path] = item;
         _updated[ref.path] = DateTime.now();
         completer?.complete();
       });
@@ -142,23 +142,23 @@ class ModelCache<T extends DBModelI> {
     final completer = Completer();
     _fetch(ref, completer);
 
-    final memUser = _users[ref.path];
-    if (memUser != null) {
-      return memUser;
+    final memItem = _items[ref.path];
+    if (memItem != null) {
+      return memItem;
     }
 
-    final user = await _addon.fetch(
+    final item = await _addon.fetch(
       ref: ref,
       source: Source.cache,
       exception: false,
     );
-    _users[ref.path] = user;
+    _items[ref.path] = item;
 
-    if (user != null) {
-      return user;
+    if (item != null) {
+      return item;
     }
     await completer.future;
-    return _users[ref.path];
+    return _items[ref.path];
   }
 
   /// Same as [fetch] but for multiple list of [DocumentReference]s, [refs]

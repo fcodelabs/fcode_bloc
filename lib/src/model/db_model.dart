@@ -62,5 +62,5 @@ abstract class DBModel implements DBModelI {
   ///
   /// Can be null. If it is null, random id will be given to the
   /// created document.
-  String get id => ref?.documentID;
+  String get id => ref?.id;
 }

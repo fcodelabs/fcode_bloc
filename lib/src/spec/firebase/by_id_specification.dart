@@ -35,7 +35,7 @@ class ByIDSpecification extends FirebaseSpecificationI {
     return [
       await collection
           .document(_id)
-          .get(source: source ?? Source.serverAndCache)
+          .get(GetOptions(source: source ?? Source.serverAndCache))
     ];
   }
 }

@@ -47,7 +47,7 @@ class RepositoryAddon<T extends DBModelI> {
     @required DocumentReference ref,
     @required Source source,
   }) async {
-    final snapshot = await ref.get(source: source);
+    final snapshot = await ref.get(GetOptions(source: source));
     return _repo.fromSnapshot(snapshot);
   }
 
@@ -91,11 +91,11 @@ class RepositoryAddon<T extends DBModelI> {
     assert(field?.isNotEmpty ?? false);
     assert(values?.isNotEmpty ?? false);
     if (add) {
-      return await ref.updateData({
+      return await ref.update({
         field: FieldValue.arrayUnion(values),
       });
     } else {
-      return await ref.updateData({
+      return await ref.update({
         field: FieldValue.arrayRemove(values),
       });
     }
@@ -106,7 +106,7 @@ class RepositoryAddon<T extends DBModelI> {
     @required TransactionHandler transactionHandler,
     Duration timeout,
   }) async {
-    return await Firestore.instance.runTransaction(
+    return await FirebaseFirestore.instance.runTransaction(
       transactionHandler,
       timeout: timeout,
     );
@@ -114,6 +114,6 @@ class RepositoryAddon<T extends DBModelI> {
 
   /// Same as [Firestore.instance.batch]
   static WriteBatch getBatch() {
-    return Firestore.instance.batch();
+    return FirebaseFirestore.instance.batch();
   }
 }

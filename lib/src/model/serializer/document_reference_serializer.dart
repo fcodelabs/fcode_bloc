@@ -2,7 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-final _runtimeType = Firestore.instance.document('').runtimeType;
+final _runtimeType = FirebaseFirestore.instance.doc('').runtimeType;
 
 /// Used to serialize/deserialize [DocumentReference] from [DocumentSnapshot]
 class DocumentReferenceSerializer
@@ -25,6 +25,6 @@ class DocumentReferenceSerializer
   @override
   DocumentReference deserialize(Serializers serializers, Object serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    return Firestore.instance.document(serialized as String);
+    return FirebaseFirestore.instance.doc(serialized as String);
   }
 }

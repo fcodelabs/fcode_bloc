@@ -28,7 +28,8 @@ abstract class FirebaseRepository<T extends DBModelI> {
 
   CollectionReference _merge(String type, DocumentReference parent) {
     assert(parent != null || type != null);
-    return parent?.collection(type) ?? Firestore.instance.collection(type);
+    return parent?.collection(type) ??
+        FirebaseFirestore.instance.collection(type);
   }
 
   /// Given [item] will be added to the collection with name [type],
@@ -43,8 +44,8 @@ abstract class FirebaseRepository<T extends DBModelI> {
   }) async {
     assert(item != null);
     final data = toMap(item);
-    final ref = _merge(type, parent).document(item.id);
-    await ref.setData(data);
+    final ref = _merge(type, parent).doc(item.id);
+    await ref.set(data);
     return ref;
   }
 
@@ -191,7 +192,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
     if (item.ref == null) {
       return await add(item: item, type: type, parent: parent);
     }
-    await item.ref.updateData(data);
+    await item.ref.update(data);
     return item.ref;
   }
 }

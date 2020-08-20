@@ -27,7 +27,7 @@ class ComplexSpecification extends FirebaseSpecificationI {
     }
     return query
         .snapshots()
-        .map<List<DocumentSnapshot>>((data) => data.documents);
+        .map<List<DocumentSnapshot>>((data) => data.docs);
   }
 
   @override
@@ -38,8 +38,10 @@ class ComplexSpecification extends FirebaseSpecificationI {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return (await query.getDocuments(source: source ?? Source.serverAndCache))
-        .documents;
+    return (await query.get(GetOptions(
+      source: source ?? Source.serverAndCache,
+    )))
+        .docs;
   }
 }
 

@@ -1,3 +1,7 @@
+### [0.5.10] - August 20, 2020
+
+* Update dependencies
+
 ### [0.5.9] - July 02, 2020
 
 * Bugfixes in repository addon

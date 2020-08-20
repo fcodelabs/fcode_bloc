@@ -25,9 +25,7 @@ class ComplexSpecification extends FirebaseSpecificationI {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return query
-        .snapshots()
-        .map<List<DocumentSnapshot>>((data) => data.docs);
+    return query.snapshots().map<List<DocumentSnapshot>>((data) => data.docs);
   }
 
   @override

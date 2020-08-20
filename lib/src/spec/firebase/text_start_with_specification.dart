@@ -25,9 +25,7 @@ class TextStartWithSpecification extends FirebaseSpecificationI {
     final query = collection
         .orderBy(_field)
         .startAt([_containText]).endAt(['$_containText\uf8ff']);
-    return query
-        .snapshots()
-        .map<List<DocumentSnapshot>>((data) => data.docs);
+    return query.snapshots().map<List<DocumentSnapshot>>((data) => data.docs);
   }
 
   @override

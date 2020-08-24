@@ -37,8 +37,8 @@ class RepositoryAddon<T extends DBModelI> {
     }
     try {
       return await _fetch(ref: ref, source: source);
-    // ignore: avoid_catches_without_on_clauses
-    } catch(e) {
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
       return null;
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
@@ -15,6 +17,18 @@ typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
 /// [FirebaseRepository.toMap] to work with the given type of [DBModel]
 /// {@endtemplate}
 abstract class FirebaseRepository<T extends DBModelI> {
+  Future<bool> _checkConnectivity() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+      return false;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
   /// Returns a [T] (of [DBModel]) when a [snapshot] is given.
   /// Can return null if the [snapshot] is in bad format.
   ///
@@ -45,7 +59,11 @@ abstract class FirebaseRepository<T extends DBModelI> {
     assert(item != null);
     final data = toMap(item);
     final ref = _merge(type, parent).doc(item.id);
-    await ref.set(data);
+    if (await _checkConnectivity()) {
+      await ref.set(data);
+    } else {
+      ref.set(data);
+    }
     return ref;
   }
 
@@ -144,7 +162,11 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// nothing will happen.
   Future<void> remove({@required T item}) async {
     assert(item != null);
-    await item.ref?.delete();
+    if (await _checkConnectivity()) {
+      await item.ref?.delete();
+    } else {
+      item.ref?.delete();
+    }
   }
 
   /// Deletes a set of documents in the collection named [type] which is
@@ -163,7 +185,11 @@ abstract class FirebaseRepository<T extends DBModelI> {
     final spec = specification as FirebaseSpecificationI;
     final data = await spec.specifySingle(_merge(type, parent));
     final futures = data.map((item) => item.reference.delete());
-    await Future.wait(futures);
+    if (await _checkConnectivity()) {
+      await Future.wait(futures);
+    } else {
+      Future.wait(futures);
+    }
   }
 
   /// Update the document which is corresponding to the given [item].
@@ -192,7 +218,11 @@ abstract class FirebaseRepository<T extends DBModelI> {
     if (item.ref == null) {
       return await add(item: item, type: type, parent: parent);
     }
-    await item.ref.update(data);
+    if (await _checkConnectivity()) {
+      await item.ref.update(data);
+    } else {
+      item.ref.update(data);
+    }
     return item.ref;
   }
 }

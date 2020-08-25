@@ -1,3 +1,8 @@
+### [0.5.12] - August 25, 2020
+
+* Offline DB listen support
+* Firebase repository write data to server only when there is connection
+
 ### [0.5.11] - August 24, 2020
 
 * Update dependencies

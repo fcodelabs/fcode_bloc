@@ -22,4 +22,12 @@ abstract class FirebaseSpecificationI implements SpecificationI {
   /// Firebase source type to be used in single fetch.
   /// See documentation on [Source] in Firestore.
   Source source = Source.serverAndCache;
+
+  /// Firebase will trigger event when changing the offline database
+  /// when this parameter is true.
+  /// This parameter has to used in [snapshots] method in [CollectionReference]
+  /// instances. See that documentation for more information.
+  ///
+  /// Firebase Guide: https://firebase.google.com/docs/firestore/manage-data/enable-offline#listen_to_offline_data
+  bool includeMetadataChanges = false;
 }

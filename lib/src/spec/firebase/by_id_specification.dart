@@ -24,7 +24,7 @@ class ByIDSpecification extends FirebaseSpecificationI {
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
     return collection
         .document(_id)
-        .snapshots()
+        .snapshots(includeMetadataChanges: includeMetadataChanges)
         .map<List<DocumentSnapshot>>((snapshot) => [snapshot]);
   }
 

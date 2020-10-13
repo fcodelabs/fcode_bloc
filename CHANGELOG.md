@@ -1,3 +1,8 @@
+### [0.5.13] - October 13, 2020
+
+* Update dependencies
+* Firestore collection group support for repository
+
 ### [0.5.12] - August 25, 2020
 
 * Offline DB listen support

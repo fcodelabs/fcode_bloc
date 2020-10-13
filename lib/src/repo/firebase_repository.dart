@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 import '../model/db_model_i.dart';
+import '../spec/firebase/complex_specification.dart';
 import '../spec/firebase/firebase_specification.dart';
 import '../spec/specification.dart';
 
@@ -44,6 +45,35 @@ abstract class FirebaseRepository<T extends DBModelI> {
     assert(parent != null || type != null);
     return parent?.collection(type) ??
         FirebaseFirestore.instance.collection(type);
+  }
+
+  Stream<List<T>> _query2stream(FirebaseSpecificationI spec, Query query) {
+    final stream = spec.specify(query);
+    return stream.map<List<T>>((data) {
+      final items = <T>[];
+      for (final document in data) {
+        final item = fromSnapshot(document);
+        if (item != null) {
+          items.add(item);
+        }
+      }
+      return items;
+    });
+  }
+
+  Future<List<T>> _query2future(
+    FirebaseSpecificationI spec,
+    Query query,
+  ) async {
+    final snapshots = await spec.specifySingle(query);
+    final items = <T>[];
+    for (final snapshot in snapshots) {
+      final item = fromSnapshot(snapshot);
+      if (item != null) {
+        items.add(item);
+      }
+    }
+    return items;
   }
 
   /// Given [item] will be added to the collection with name [type],
@@ -122,17 +152,28 @@ abstract class FirebaseRepository<T extends DBModelI> {
   }) {
     assert(specification != null);
     final spec = specification as FirebaseSpecificationI;
-    final stream = spec.specify(_merge(type, parent));
-    return stream.map<List<T>>((data) {
-      final items = <T>[];
-      for (final document in data) {
-        final item = fromSnapshot(document);
-        if (item != null) {
-          items.add(item);
-        }
-      }
-      return items;
-    });
+    return _query2stream(spec, _merge(type, parent));
+  }
+
+  /// Usage is as same as in the [FirebaseRepository.query], but this is
+  /// for collection group querying.
+  ///
+  /// This function will return a [Stream] of [List]s with data from the
+  /// specified collection group.
+  ///
+  /// You can find more about the collection groups in the official
+  /// firebase documentation.
+  ///
+  /// https://firebase.google.com/docs/firestore/query-data/queries#collection-group-query
+  Stream<List<T>> queryGroup({
+    @required ComplexSpecification specification,
+    @required String collectionPath,
+  }) {
+    assert(specification != null && collectionPath != null);
+    return _query2stream(
+      specification,
+      FirebaseFirestore.instance.collectionGroup(collectionPath),
+    );
   }
 
   /// Same as [FirebaseRepository.query] but instead of returning a [Stream]
@@ -146,15 +187,24 @@ abstract class FirebaseRepository<T extends DBModelI> {
   }) async {
     assert(specification != null);
     final spec = specification as FirebaseSpecificationI;
-    final snapshots = await spec.specifySingle(_merge(type, parent));
-    final items = <T>[];
-    for (final snapshot in snapshots) {
-      final item = fromSnapshot(snapshot);
-      if (item != null) {
-        items.add(item);
-      }
-    }
-    return items;
+    return _query2future(spec, _merge(type, parent));
+  }
+
+  /// Same as [FirebaseRepository.queryGroup] but instead of returning a
+  /// [Stream] this will return a [Future] with the latest values
+  /// in the Firestore.
+  ///
+  /// Usage is as same as the example in [FirebaseRepository.query]
+  /// and [FirebaseRepository.queryGroup]
+  Future<List<T>> queryGroupSingle({
+    @required ComplexSpecification specification,
+    @required String collectionPath,
+  }) async {
+    assert(specification != null && collectionPath != null);
+    return _query2future(
+      specification,
+      FirebaseFirestore.instance.collectionGroup(collectionPath),
+    );
   }
 
   /// Delete the document corresponding to the [item].

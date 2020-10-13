@@ -20,8 +20,7 @@ class ComplexSpecification extends FirebaseSpecificationI {
   ComplexSpecification(this._complexWhere) : assert(_complexWhere != null);
 
   @override
-  Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
-    Query query = collection;
+  Stream<List<DocumentSnapshot>> specify(Query query) {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
@@ -31,10 +30,7 @@ class ComplexSpecification extends FirebaseSpecificationI {
   }
 
   @override
-  Future<List<DocumentSnapshot>> specifySingle(
-    CollectionReference collection,
-  ) async {
-    Query query = collection;
+  Future<List<DocumentSnapshot>> specifySingle(Query query) async {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }

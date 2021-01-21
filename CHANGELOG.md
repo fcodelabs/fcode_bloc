@@ -1,3 +1,7 @@
+### [0.5.14] - January 21, 2021
+
+* Update dependencies
+
 ### [0.5.13] - October 13, 2020
 
 * Update dependencies

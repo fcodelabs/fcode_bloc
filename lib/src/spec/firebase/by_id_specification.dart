@@ -23,7 +23,7 @@ class ByIDSpecification extends FirebaseSpecificationI {
   @override
   Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
     return collection
-        .document(_id)
+        .doc(_id)
         .snapshots(includeMetadataChanges: includeMetadataChanges)
         .map<List<DocumentSnapshot>>((snapshot) => [snapshot]);
   }
@@ -34,7 +34,7 @@ class ByIDSpecification extends FirebaseSpecificationI {
   ) async {
     return [
       await collection
-          .document(_id)
+          .doc(_id)
           .get(GetOptions(source: source ?? Source.serverAndCache))
     ];
   }

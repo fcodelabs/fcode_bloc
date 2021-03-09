@@ -7,8 +7,6 @@ library fcode_bloc;
 export 'src/model/db_model.dart';
 export 'src/model/db_model_i.dart';
 export 'src/model/model_cache.dart';
-export 'src/reference_handler.dart';
-export 'src/references_handler.dart';
 export 'src/repo/cached_repository.dart';
 export 'src/repo/firebase_repository.dart';
 export 'src/repo/repository_addon.dart';

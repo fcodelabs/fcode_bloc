@@ -1,3 +1,8 @@
+### [0.6.0] - March 09, 2021
+
+* Remove some deprecated APIs from this SDK
+* Add null safety feature
+
 ### [0.5.14] - January 21, 2021
 
 * Update dependencies

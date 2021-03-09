@@ -17,7 +17,7 @@ class ComplexSpecification extends FirebaseSpecificationI {
   final List<ComplexOperation> _complexWhere;
 
   /// {@macro cmpRef}
-  ComplexSpecification(this._complexWhere) : assert(_complexWhere != null);
+  ComplexSpecification(this._complexWhere);
 
   @override
   Stream<List<DocumentSnapshot>> specify(Query query) {
@@ -34,10 +34,7 @@ class ComplexSpecification extends FirebaseSpecificationI {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return (await query.get(GetOptions(
-      source: source ?? Source.serverAndCache,
-    )))
-        .docs;
+    return (await query.get(GetOptions(source: source))).docs;
   }
 }
 
@@ -131,13 +128,13 @@ class ComplexWhere implements ComplexOperation {
 
   /// If provided, this will find documents where the given array by `field`
   /// which contains any of the values in [arrayContainsAny].
-  final List arrayContainsAny;
+  final List<dynamic>? arrayContainsAny;
 
   /// -
-  final List whereIn;
+  final List<dynamic>? whereIn;
 
   /// If provided, this will find documents where the provided field is null
-  bool isNull;
+  bool? isNull;
 
   /// {@macro whereOp}
   ComplexWhere(

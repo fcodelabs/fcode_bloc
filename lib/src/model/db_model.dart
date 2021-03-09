@@ -20,7 +20,7 @@ abstract class DBModel implements DBModelI {
   /// [FirebaseRepository.fromSnapshot] should have a [ref].
   ///
   /// Otherwise can be null.
-  DocumentReference ref;
+  DocumentReference? ref;
 
   /// {@macro model}
   DBModel({this.ref});
@@ -54,7 +54,7 @@ abstract class DBModel implements DBModelI {
   /// }
   /// ```
   DBModel clone() {
-    return null;
+    return _DummyDBModel(ref: ref);
   }
 
   /// Generate a [id] for the [DBModel].
@@ -62,5 +62,9 @@ abstract class DBModel implements DBModelI {
   ///
   /// Can be null. If it is null, random id will be given to the
   /// created document.
-  String get id => ref?.id;
+  String? get id => ref?.id;
+}
+
+class _DummyDBModel extends DBModel {
+  _DummyDBModel({DocumentReference? ref}) : super(ref: ref);
 }

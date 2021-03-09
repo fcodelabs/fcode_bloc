@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 import '../repo/repository_addon.dart';
 import 'db_model_i.dart';
@@ -71,7 +70,7 @@ class ModelCache<T extends DBModelI> {
   /// [timeout] - Timeout period in minutes which [ModelCache] will re-fetch
   /// data from Firestore server (Default 60).
   static void setSettings<T extends DBModelI>({
-    @required RepositoryAddon<T> addon,
+    required RepositoryAddon<T> addon,
     int timeout = 60,
   }) {
     final name = T.toString();
@@ -83,27 +82,27 @@ class ModelCache<T extends DBModelI> {
   factory ModelCache() {
     final name = T.toString();
     if (_instances[name] == null) {
-      _instances[name] = ModelCache<T>._();
+      final timeout = _timeouts[name];
+      final addon = _addons[name];
+      if (timeout == null || addon == null) {
+        throw Exception("Cannot find settings for the DBModelI type $T. "
+            "You can set settings for this type using ModelCacheSettings. "
+            "Make sure to use the correct type when calling the setSettings "
+            "function of that class.\n"
+            "Eg: ModelCacheSettings.setSettings(...) is not the correct way "
+            "of adding settings.\n"
+            "To add settings to type User "
+            "(which extends DBModelI) you can use\n"
+            "Eg: ModelCacheSettings.setSettings<User>(...) \n\n"
+            "If the issue still persists, use our github to create a issue.\n"
+            "https://github.com/fcodelabs/fcode_bloc/issues");
+      }
+      _instances[name] = ModelCache<T>._(timeout, addon as RepositoryAddon<T>);
     }
-    return _instances[name];
+    return _instances[name] as ModelCache<T>;
   }
 
-  ModelCache._()
-      : _timeout = _timeouts[T.toString()],
-        _addon = _addons[T.toString()] {
-    if (_timeout == null || _addon == null) {
-      throw Exception("Cannot find settings for the DBModelI type $T. "
-          "You can set settings for this type using ModelCacheSettings. "
-          "Make sure to use the correct type when calling the setSettings "
-          "function of that class.\n"
-          "Eg: ModelCacheSettings.setSettings(...) is not the correct way "
-          "of adding settings.\n"
-          "To add settings to type User (which extends DBModelI) you can use\n"
-          "Eg: ModelCacheSettings.setSettings<User>(...) \n\n"
-          "If the issue still persists, use our github to create a issue.\n"
-          "https://github.com/fcodelabs/fcode_bloc/issues");
-    }
-  }
+  ModelCache._(this._timeout, this._addon);
 
   /////////////////////////////////////////////////////////////////////////////
 
@@ -113,15 +112,14 @@ class ModelCache<T extends DBModelI> {
   final RepositoryAddon<T> _addon;
 
   /// Get the cached data directly from memory
-  T fromMem(DocumentReference ref) {
-    assert(ref != null);
+  T? fromMem(DocumentReference ref) {
     fetch(ref);
     return _items[ref.path];
   }
 
-  void _fetch(DocumentReference ref, [Completer completer]) {
+  void _fetch(DocumentReference ref, [Completer? completer]) {
     final diff = _updated[ref.path]?.difference(DateTime.now());
-    if ((diff?.inMinutes?.abs() ?? _timeout) >= _timeout) {
+    if ((diff?.inMinutes.abs() ?? _timeout) >= _timeout) {
       _addon.fetch(ref: ref, source: Source.server).then((item) {
         _items[ref.path] = item;
         _updated[ref.path] = DateTime.now();
@@ -147,18 +145,17 @@ class ModelCache<T extends DBModelI> {
       return memItem;
     }
 
-    final item = await _addon.fetch(
+    final item = await _addon.tryFetch(
       ref: ref,
       source: Source.cache,
-      exception: false,
     );
-    _items[ref.path] = item;
 
     if (item != null) {
+      _items[ref.path] = item;
       return item;
     }
     await completer.future;
-    return _items[ref.path];
+    return _items[ref.path]!;
   }
 
   /// Same as [fetch] but for multiple list of [DocumentReference]s, [refs]

@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 
 import '../model/db_model_i.dart';
 import '../spec/firebase/complex_specification.dart';
 import '../spec/firebase/firebase_specification.dart';
 import '../spec/specification.dart';
 
+/// Map an [DBModel] to a [Map<String, dynamic> so that
+/// Firestore can understand which fields to be updated.
+/// Put only fields that's needed to be updated in the
+/// returning [Map].
 typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
 
 /// {@template repo}
@@ -35,14 +38,13 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// If it is going to return a [DBModel], [DBModel.ref] should always
   /// be not `null`.
-  T fromSnapshot(DocumentSnapshot snapshot);
+  T? fromSnapshot(DocumentSnapshot snapshot);
 
   /// Converts the given [item] to a [Map] that can be stored in
   /// Firestore.
   Map<String, dynamic> toMap(T item);
 
-  CollectionReference _merge(String type, DocumentReference parent) {
-    assert(parent != null || type != null);
+  CollectionReference _merge(String type, DocumentReference? parent) {
     return parent?.collection(type) ??
         FirebaseFirestore.instance.collection(type);
   }
@@ -82,11 +84,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// Will return the [DocumentReference] that was used to store [item].
   Future<DocumentReference> add({
-    @required T item,
-    @required String type,
-    DocumentReference parent,
+    required T item,
+    required String type,
+    DocumentReference? parent,
   }) async {
-    assert(item != null);
     final data = toMap(item);
     final ref = _merge(type, parent).doc(item.id);
     if (await _checkConnectivity()) {
@@ -100,9 +101,9 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Same as [FirebaseRepository.add] but will store a [List] of given
   /// [items] and return a [List] of [DocumentReference]s.
   Future<void> addList({
-    @required Iterable<T> items,
-    @required String type,
-    DocumentReference parent,
+    required Iterable<T> items,
+    required String type,
+    DocumentReference? parent,
   }) async {
     final futures = items.map(
       (item) => add(
@@ -146,11 +147,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// );
   /// ```
   Stream<List<T>> query({
-    @required SpecificationI specification,
-    @required String type,
-    DocumentReference parent,
+    required SpecificationI specification,
+    required String type,
+    DocumentReference? parent,
   }) {
-    assert(specification != null);
     final spec = specification as FirebaseSpecificationI;
     return _query2stream(spec, _merge(type, parent));
   }
@@ -166,10 +166,9 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// https://firebase.google.com/docs/firestore/query-data/queries#collection-group-query
   Stream<List<T>> queryGroup({
-    @required ComplexSpecification specification,
-    @required String collectionPath,
+    required ComplexSpecification specification,
+    required String collectionPath,
   }) {
-    assert(specification != null && collectionPath != null);
     return _query2stream(
       specification,
       FirebaseFirestore.instance.collectionGroup(collectionPath),
@@ -181,11 +180,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// Usage is as same as the example in [FirebaseRepository.query]
   Future<List<T>> querySingle({
-    @required SpecificationI specification,
-    @required String type,
-    DocumentReference parent,
+    required SpecificationI specification,
+    required String type,
+    DocumentReference? parent,
   }) async {
-    assert(specification != null);
     final spec = specification as FirebaseSpecificationI;
     return _query2future(spec, _merge(type, parent));
   }
@@ -197,10 +195,9 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Usage is as same as the example in [FirebaseRepository.query]
   /// and [FirebaseRepository.queryGroup]
   Future<List<T>> queryGroupSingle({
-    @required ComplexSpecification specification,
-    @required String collectionPath,
+    required ComplexSpecification specification,
+    required String collectionPath,
   }) async {
-    assert(specification != null && collectionPath != null);
     return _query2future(
       specification,
       FirebaseFirestore.instance.collectionGroup(collectionPath),
@@ -210,8 +207,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Delete the document corresponding to the [item].
   /// If the reference of the [item] ([DBModel.ref]) is null
   /// nothing will happen.
-  Future<void> remove({@required T item}) async {
-    assert(item != null);
+  Future<void> remove({required T item}) async {
     if (await _checkConnectivity()) {
       await item.ref?.delete();
     } else {
@@ -227,11 +223,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// [specification]. To learn how to use [SpecificationI] look at the
   /// examples in [FirebaseRepository.query].
   Future<void> removeList({
-    @required SpecificationI specification,
-    @required String type,
-    DocumentReference parent,
+    required SpecificationI specification,
+    required String type,
+    DocumentReference? parent,
   }) async {
-    assert(specification != null);
     final spec = specification as FirebaseSpecificationI;
     final data = await spec.specifySingle(_merge(type, parent));
     final futures = data.map((item) => item.reference.delete());
@@ -258,21 +253,20 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Returns the [DocumentReference] which was used to update
   /// or add the [item].
   Future<DocumentReference> update({
-    @required T item,
-    @required String type,
-    DocumentReference parent,
-    MapperCallback<T> mapper,
+    required T item,
+    required String type,
+    DocumentReference? parent,
+    MapperCallback<T>? mapper,
   }) async {
-    assert(item != null);
     final data = mapper?.call(item) ?? toMap(item);
     if (item.ref == null) {
       return await add(item: item, type: type, parent: parent);
     }
     if (await _checkConnectivity()) {
-      await item.ref.update(data);
+      await item.ref!.update(data);
     } else {
-      item.ref.update(data);
+      item.ref!.update(data);
     }
-    return item.ref;
+    return item.ref!;
   }
 }

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../model/db_model_i.dart';
@@ -12,50 +11,54 @@ class RepositoryAddon<T extends DBModelI> {
   final FirebaseRepository<T> _repo;
 
   /// {@macro repo}
-  RepositoryAddon({@required FirebaseRepository<T> repository})
-      : assert(repository != null),
-        _repo = repository;
+  RepositoryAddon({required FirebaseRepository<T> repository})
+      : _repo = repository;
 
   /// Transform the given [ref] to a [Stream] of [T]s.
   /// The [Stream] will emmit new values each time there is a change
   /// in the DB.
   Stream<T> transform({
-    @required DocumentReference ref,
+    required DocumentReference ref,
   }) {
-    return ref.snapshots().map<T>(_repo.fromSnapshot);
+    return ref
+        .snapshots()
+        .map<T?>(_repo.fromSnapshot)
+        .where((item) => item != null)
+        .whereType<T>();
   }
 
   /// Same as [RepositoryAddon.transform] but will return a [Future] with
   /// latest value in the DB using the given [ref].
-  Future<T> fetch({
-    @required DocumentReference ref,
+  /// If the given [ref] is not found, this will return [null] without
+  /// throwing any exception.
+  Future<T?> tryFetch({
+    required DocumentReference ref,
     Source source = Source.serverAndCache,
-    bool exception = true,
   }) async {
-    if (exception) {
-      return _fetch(ref: ref, source: source);
-    }
     try {
-      return await _fetch(ref: ref, source: source);
+      return await fetch(ref: ref, source: source);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       return null;
     }
   }
 
-  Future<T> _fetch({
-    @required DocumentReference ref,
-    @required Source source,
+  /// Same as [RepositoryAddon.transform] but will return a [Future] with
+  /// latest value in the DB using the given [ref].
+  /// If the given [ref] is not found, this will throw an exception.
+  Future<T> fetch({
+    required DocumentReference ref,
+    Source source = Source.serverAndCache,
   }) async {
     final snapshot = await ref.get(GetOptions(source: source));
-    return _repo.fromSnapshot(snapshot);
+    return _repo.fromSnapshot(snapshot)!;
   }
 
   /// Transform the given [refs] to a [List] of [T]s.
   /// The [Stream] will emmit new values each time there is a change
   /// in the DB.
   Stream<List<T>> multiTransform({
-    @required Iterable<DocumentReference> refs,
+    required Iterable<DocumentReference> refs,
   }) {
     return CombineLatestStream.list(refs.map<Stream<T>>(
       (ref) => transform(ref: ref),
@@ -65,15 +68,17 @@ class RepositoryAddon<T extends DBModelI> {
   /// Same as [RepositoryAddon.multiTransform] but will return a [Future] with
   /// latest values in the DB using the given [refs].
   Future<List<T>> multiFetch({
-    @required Iterable<DocumentReference> refs,
+    required Iterable<DocumentReference> refs,
     Source source = Source.serverAndCache,
-  }) {
-    final futures = refs.map((ref) => fetch(
+  }) async {
+    final futures = refs.map((ref) async => await tryFetch(
           ref: ref,
           source: source,
-          exception: false,
         ));
-    return Future.wait(futures);
+    return (await Future.wait(futures))
+        .where((i) => i != null)
+        .whereType<T>()
+        .toList(growable: false);
   }
 
   /// Update the array in the [field] of the Document [ref] with the given
@@ -82,14 +87,13 @@ class RepositoryAddon<T extends DBModelI> {
   /// If [add] is true, the [values] will be added to [ref] and removed
   /// otherwise.
   static Future<void> arrayUpdate({
-    @required DocumentReference ref,
-    @required String field,
-    @required List<dynamic> values,
+    required DocumentReference ref,
+    required String field,
+    required List<dynamic> values,
     bool add = true,
   }) async {
-    assert(ref != null);
-    assert(field?.isNotEmpty ?? false);
-    assert(values?.isNotEmpty ?? false);
+    assert(field.isNotEmpty);
+    assert(values.isNotEmpty);
     if (add) {
       return await ref.update({
         field: FieldValue.arrayUnion(values),
@@ -102,13 +106,13 @@ class RepositoryAddon<T extends DBModelI> {
   }
 
   /// Same as [Firestore.instance.runTransaction]
-  static Future<Map<String, dynamic>> runTransaction({
-    @required TransactionHandler transactionHandler,
-    Duration timeout,
+  static Future<T> runTransaction<T>({
+    required TransactionHandler<T> transactionHandler,
+    Duration? timeout,
   }) async {
     return await FirebaseFirestore.instance.runTransaction(
       transactionHandler,
-      timeout: timeout,
+      timeout: timeout ?? const Duration(seconds: 30),
     );
   }
 

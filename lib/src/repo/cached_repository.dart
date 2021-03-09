@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../model/db_model_i.dart';
@@ -33,9 +32,9 @@ class CachedRepository<T extends DBModelI> {
 
   /// Same as [FirebaseRepository.query] but with caching
   Stream<List<T>> query({
-    @required SpecificationI specification,
-    String type,
-    DocumentReference parent,
+    required SpecificationI specification,
+    required String type,
+    DocumentReference? parent,
   }) {
     final spec = specification as FirebaseSpecificationI;
     spec.source = Source.cache;
@@ -57,18 +56,19 @@ class CachedRepository<T extends DBModelI> {
 
   /// Same as [RepositoryAddon.transform] but with caching
   Stream<T> transform({
-    @required DocumentReference ref,
+    required DocumentReference ref,
   }) {
     return ConcatStream([
-      Stream.fromFuture(_addon.fetch(ref: ref, source: Source.cache))
-          .handleError(() {}),
+      Stream.fromFuture(_addon.tryFetch(ref: ref, source: Source.cache))
+          .handleError(() {})
+          .whereType<T>(),
       _addon.transform(ref: ref),
     ]);
   }
 
   /// Same as [RepositoryAddon.multiTransform] but with caching
   Stream<List<T>> multiTransform({
-    @required Iterable<DocumentReference> refs,
+    required Iterable<DocumentReference> refs,
   }) {
     return ConcatStream([
       Stream.fromFuture(_addon.multiFetch(refs: refs, source: Source.cache))

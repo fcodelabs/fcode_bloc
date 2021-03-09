@@ -17,11 +17,10 @@ class TextStartWithSpecification extends FirebaseSpecificationI {
 
   /// {@macro txtSpec}
   TextStartWithSpecification(this._field, this._containText)
-      : assert(_field != null && _field.isNotEmpty),
-        assert(_containText != null);
+      : assert(_field.isNotEmpty);
 
   @override
-  Stream<List<DocumentSnapshot>> specify(CollectionReference collection) {
+  Stream<List<DocumentSnapshot>> specify(Query collection) {
     final query = collection
         .orderBy(_field)
         .startAt([_containText]).endAt(['$_containText\uf8ff']);
@@ -32,14 +31,11 @@ class TextStartWithSpecification extends FirebaseSpecificationI {
 
   @override
   Future<List<DocumentSnapshot>> specifySingle(
-    CollectionReference collection,
+    Query collection,
   ) async {
     final query = collection
         .orderBy(_field)
         .startAt([_containText]).endAt(['$_containText\uf8ff']);
-    return (await query.get(GetOptions(
-      source: source ?? Source.serverAndCache,
-    )))
-        .docs;
+    return (await query.get(GetOptions(source: source))).docs;
   }
 }

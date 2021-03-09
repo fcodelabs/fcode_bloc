@@ -23,10 +23,10 @@ abstract class DBModelI {
   /// Store the [DocumentReference] of the document
   ///
   /// For more see [DBModel.ref]
-  DocumentReference get ref;
+  DocumentReference? get ref;
 
   /// Generate a [id] for the interface [DBModelI]
   ///
   /// For more see [DBModel.id]
-  String get id;
+  String? get id;
 }

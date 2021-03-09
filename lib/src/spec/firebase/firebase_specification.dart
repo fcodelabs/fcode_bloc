@@ -13,11 +13,11 @@ abstract class FirebaseSpecificationI implements SpecificationI {
   /// Used by [FirebaseRepository.query] to get a [Stream] of
   /// [List] of [DocumentReference]s according to the specified rule
   /// in the implementation.
-  Stream<List<DocumentSnapshot>> specify(CollectionReference collection);
+  Stream<List<DocumentSnapshot>> specify(Query collection);
 
   /// Same as [FirebaseSpecificationI.specify] but this will return a [Future]
   /// so that it can be used by [FirebaseRepository.querySingle]
-  Future<List<DocumentSnapshot>> specifySingle(CollectionReference collection);
+  Future<List<DocumentSnapshot>> specifySingle(Query collection);
 
   /// Firebase source type to be used in single fetch.
   /// See documentation on [Source] in Firestore.

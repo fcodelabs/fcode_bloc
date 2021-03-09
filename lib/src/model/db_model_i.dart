@@ -1,4 +1,3 @@
-import 'package:built_value/built_value.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Interface that will provide basic functionality for a [DBModel] that
@@ -24,12 +23,10 @@ abstract class DBModelI {
   /// Store the [DocumentReference] of the document
   ///
   /// For more see [DBModel.ref]
-  @nullable
   DocumentReference get ref;
 
   /// Generate a [id] for the interface [DBModelI]
   ///
   /// For more see [DBModel.id]
-  @nullable
   String get id;
 }

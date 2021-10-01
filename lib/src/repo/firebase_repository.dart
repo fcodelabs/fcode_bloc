@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/db_model_i.dart';
-import '../spec/firebase/complex_specification.dart';
 import '../spec/firebase/firebase_specification.dart';
 import '../spec/specification.dart';
 
@@ -38,44 +37,40 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// If it is going to return a [DBModel], [DBModel.ref] should always
   /// be not `null`.
-  T? fromSnapshot(DocumentSnapshot snapshot);
+  T fromSnapshot(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  );
 
   /// Converts the given [item] to a [Map] that can be stored in
   /// Firestore.
-  Map<String, dynamic> toMap(T item);
+  Map<String, Object?> toMap(
+    T value,
+    SetOptions? options,
+  );
 
-  CollectionReference _merge(String type, DocumentReference? parent) {
+  _merge(String type, DocumentReference? parent) {
     return parent?.collection(type) ??
         FirebaseFirestore.instance.collection(type);
   }
 
-  Stream<List<T>> _query2stream(FirebaseSpecificationI spec, Query query) {
-    final stream = spec.specify(query);
-    return stream.map<List<T>>((data) {
-      final items = <T>[];
-      for (final document in data) {
-        final item = fromSnapshot(document);
-        if (item != null) {
-          items.add(item);
-        }
-      }
-      return items;
-    });
+  Stream<List<T>> _query2stream(FirebaseSpecificationI<T> spec, Query query) {
+    final q = query.withConverter(
+      fromFirestore: fromSnapshot,
+      toFirestore: toMap,
+    );
+    return spec.specify(q);
   }
 
   Future<List<T>> _query2future(
-    FirebaseSpecificationI spec,
+    FirebaseSpecificationI<T> spec,
     Query query,
   ) async {
-    final snapshots = await spec.specifySingle(query);
-    final items = <T>[];
-    for (final snapshot in snapshots) {
-      final item = fromSnapshot(snapshot);
-      if (item != null) {
-        items.add(item);
-      }
-    }
-    return items;
+    final q = query.withConverter(
+      fromFirestore: fromSnapshot,
+      toFirestore: toMap,
+    );
+    return await spec.specifySingle(q);
   }
 
   /// Given [item] will be added to the collection with name [type],
@@ -85,10 +80,11 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Will return the [DocumentReference] that was used to store [item].
   Future<DocumentReference> add({
     required T item,
+    SetOptions? setOptions,
     required String type,
     DocumentReference? parent,
   }) async {
-    final data = toMap(item);
+    final data = toMap(item, setOptions);
     final ref = _merge(type, parent).doc(item.id);
     if (await _checkConnectivity()) {
       await ref.set(data);
@@ -151,7 +147,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
     required String type,
     DocumentReference? parent,
   }) {
-    final spec = specification as FirebaseSpecificationI;
+    final spec = specification as FirebaseSpecificationI<T>;
     return _query2stream(spec, _merge(type, parent));
   }
 
@@ -166,11 +162,12 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// https://firebase.google.com/docs/firestore/query-data/queries#collection-group-query
   Stream<List<T>> queryGroup({
-    required ComplexSpecification specification,
+    required SpecificationI specification,
     required String collectionPath,
   }) {
+    final spec = specification as FirebaseSpecificationI<T>;
     return _query2stream(
-      specification,
+      spec,
       FirebaseFirestore.instance.collectionGroup(collectionPath),
     );
   }
@@ -184,7 +181,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
     required String type,
     DocumentReference? parent,
   }) async {
-    final spec = specification as FirebaseSpecificationI;
+    final spec = specification as FirebaseSpecificationI<T>;
     return _query2future(spec, _merge(type, parent));
   }
 
@@ -195,11 +192,12 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Usage is as same as the example in [FirebaseRepository.query]
   /// and [FirebaseRepository.queryGroup]
   Future<List<T>> queryGroupSingle({
-    required ComplexSpecification specification,
+    required SpecificationI specification,
     required String collectionPath,
   }) async {
+    final spec = specification as FirebaseSpecificationI<T>;
     return _query2future(
-      specification,
+      spec,
       FirebaseFirestore.instance.collectionGroup(collectionPath),
     );
   }
@@ -227,9 +225,9 @@ abstract class FirebaseRepository<T extends DBModelI> {
     required String type,
     DocumentReference? parent,
   }) async {
-    final spec = specification as FirebaseSpecificationI;
+    final spec = specification as FirebaseSpecificationI<T>;
     final data = await spec.specifySingle(_merge(type, parent));
-    final futures = data.map((item) => item.reference.delete());
+    final futures = data.map((item) async => item.ref?.delete());
     if (await _checkConnectivity()) {
       await Future.wait(futures);
     } else {
@@ -254,11 +252,12 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// or add the [item].
   Future<DocumentReference> update({
     required T item,
+    SetOptions? setOptions,
     required String type,
     DocumentReference? parent,
     MapperCallback<T>? mapper,
   }) async {
-    final data = mapper?.call(item) ?? toMap(item);
+    final data = mapper?.call(item) ?? toMap(item, setOptions);
     if (item.ref == null) {
       return await add(item: item, type: type, parent: parent);
     }

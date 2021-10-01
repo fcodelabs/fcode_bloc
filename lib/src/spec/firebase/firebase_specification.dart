@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../model/db_model_i.dart';
 import '../specification.dart';
 
 /// To know how to use [FirebaseSpecificationI],
@@ -9,15 +10,16 @@ import '../specification.dart';
 /// Implement [FirebaseSpecificationI.specify] and
 /// [FirebaseSpecificationI.specifySingle]
 /// according to the need of the query.
-abstract class FirebaseSpecificationI implements SpecificationI {
+abstract class FirebaseSpecificationI<T extends DBModelI>
+    implements SpecificationI {
   /// Used by [FirebaseRepository.query] to get a [Stream] of
   /// [List] of [DocumentReference]s according to the specified rule
   /// in the implementation.
-  Stream<List<DocumentSnapshot>> specify(Query collection);
+  Stream<List<T>> specify(Query<T> collection);
 
   /// Same as [FirebaseSpecificationI.specify] but this will return a [Future]
   /// so that it can be used by [FirebaseRepository.querySingle]
-  Future<List<DocumentSnapshot>> specifySingle(Query collection);
+  Future<List<T>> specifySingle(Query<T> collection);
 
   /// Firebase source type to be used in single fetch.
   /// See documentation on [Source] in Firestore.

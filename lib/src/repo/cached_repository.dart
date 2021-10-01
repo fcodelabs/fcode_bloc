@@ -4,8 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../model/db_model_i.dart';
-import '../spec/firebase/firebase_specification.dart';
-import '../spec/specification.dart';
+import '../spec/query_transformer.dart';
 import 'firebase_repository.dart';
 import 'repository_addon.dart';
 
@@ -32,22 +31,20 @@ class CachedRepository<T extends DBModelI> {
 
   /// Same as [FirebaseRepository.query] but with caching
   Stream<Iterable<T>> query({
-    required SpecificationI specification,
+    required QueryTransformer<T> spec,
     required String type,
     DocumentReference? parent,
   }) {
-    final spec = specification as FirebaseSpecificationI;
-    spec.source = Source.cache;
     final cache = repository.querySingle(
-      specification: spec,
+      spec: spec,
       type: type,
       parent: parent,
+      source: Source.cache,
     );
-    spec.source = Source.serverAndCache;
     return ConcatStream([
       Stream.fromFuture(cache),
       repository.query(
-        specification: spec,
+        spec: spec,
         type: type,
         parent: parent,
       )

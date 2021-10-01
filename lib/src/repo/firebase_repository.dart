@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/db_model_i.dart';
-import '../spec/firebase/firebase_specification.dart';
-import '../spec/specification.dart';
+import '../spec/query_transformer.dart';
 
 /// Map an [DBModel] to a [Map<String, dynamic> so that
 /// Firestore can understand which fields to be updated.
@@ -54,23 +53,27 @@ abstract class FirebaseRepository<T extends DBModelI> {
         FirebaseFirestore.instance.collection(type);
   }
 
-  Stream<Iterable<T>> _query2stream(FirebaseSpecificationI<T> spec, Query query) {
+  Stream<Iterable<T>> _query2stream(
+      Query query, QueryTransformer<T> qt, bool includeMetadataChanges) {
     final q = query.withConverter(
       fromFirestore: fromSnapshot,
       toFirestore: toMap,
     );
-    return spec.specify(q);
+    return qt
+        .transform(q)
+        .snapshots(includeMetadataChanges: includeMetadataChanges)
+        .map((data) => data.docs.map((e) => e.data()));
   }
 
   Future<Iterable<T>> _query2future(
-    FirebaseSpecificationI<T> spec,
-    Query query,
-  ) async {
+      Query query, QueryTransformer<T> qt, Source source) async {
     final q = query.withConverter(
       fromFirestore: fromSnapshot,
       toFirestore: toMap,
     );
-    return await spec.specifySingle(q);
+    return (await qt.transform(q).get(GetOptions(source: source)))
+        .docs
+        .map((e) => e.data());
   }
 
   /// Given [item] will be added to the collection with name [type],
@@ -143,12 +146,12 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// );
   /// ```
   Stream<Iterable<T>> query({
-    required SpecificationI specification,
+    required QueryTransformer<T> spec,
     required String type,
     DocumentReference? parent,
+    bool includeMetadataChanges = false,
   }) {
-    final spec = specification as FirebaseSpecificationI<T>;
-    return _query2stream(spec, _merge(type, parent));
+    return _query2stream(_merge(type, parent), spec, includeMetadataChanges);
   }
 
   /// Usage is as same as in the [FirebaseRepository.query], but this is
@@ -162,14 +165,14 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// https://firebase.google.com/docs/firestore/query-data/queries#collection-group-query
   Stream<Iterable<T>> queryGroup({
-    required SpecificationI specification,
+    required QueryTransformer<T> spec,
     required String collectionPath,
+    bool includeMetadataChanges = false,
   }) {
-    final spec = specification as FirebaseSpecificationI<T>;
     return _query2stream(
-      spec,
-      FirebaseFirestore.instance.collectionGroup(collectionPath),
-    );
+        FirebaseFirestore.instance.collectionGroup(collectionPath),
+        spec,
+        includeMetadataChanges,);
   }
 
   /// Same as [FirebaseRepository.query] but instead of returning a [Stream]
@@ -177,12 +180,12 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// Usage is as same as the example in [FirebaseRepository.query]
   Future<Iterable<T>> querySingle({
-    required SpecificationI specification,
+    required QueryTransformer<T> spec,
     required String type,
     DocumentReference? parent,
+    Source source = Source.serverAndCache,
   }) async {
-    final spec = specification as FirebaseSpecificationI<T>;
-    return _query2future(spec, _merge(type, parent));
+    return _query2future(_merge(type, parent), spec, source);
   }
 
   /// Same as [FirebaseRepository.queryGroup] but instead of returning a
@@ -192,13 +195,14 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Usage is as same as the example in [FirebaseRepository.query]
   /// and [FirebaseRepository.queryGroup]
   Future<Iterable<T>> queryGroupSingle({
-    required SpecificationI specification,
+    required QueryTransformer<T> spec,
     required String collectionPath,
+    Source source = Source.serverAndCache,
   }) async {
-    final spec = specification as FirebaseSpecificationI<T>;
     return _query2future(
-      spec,
       FirebaseFirestore.instance.collectionGroup(collectionPath),
+      spec,
+      source,
     );
   }
 
@@ -210,28 +214,6 @@ abstract class FirebaseRepository<T extends DBModelI> {
       await item.ref?.delete();
     } else {
       item.ref?.delete();
-    }
-  }
-
-  /// Deletes a set of documents in the collection named [type] which is
-  /// inside the [parent] document. If [parent] is `null`, a global
-  /// collection with named [type] will be used.
-  ///
-  /// The set of documents to be deleted is selected by the given
-  /// [specification]. To learn how to use [SpecificationI] look at the
-  /// examples in [FirebaseRepository.query].
-  Future<void> removeList({
-    required SpecificationI specification,
-    required String type,
-    DocumentReference? parent,
-  }) async {
-    final spec = specification as FirebaseSpecificationI<T>;
-    final data = await spec.specifySingle(_merge(type, parent));
-    final futures = data.map((item) async => item.ref?.delete());
-    if (await _checkConnectivity()) {
-      await Future.wait(futures);
-    } else {
-      Future.wait(futures);
     }
   }
 

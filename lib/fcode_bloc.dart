@@ -10,4 +10,7 @@ export 'src/model/model_cache.dart';
 export 'src/repo/cached_repository.dart';
 export 'src/repo/firebase_repository.dart';
 export 'src/repo/repository_addon.dart';
-export 'src/spec/firebase/text_start_with_specification.dart';
+export 'src/spec/multi_query_transformer.dart';
+export 'src/spec/query_transformer.dart';
+export 'src/spec/query_transformer_utils.dart';
+export 'src/spec/text_start_with_query.dart';

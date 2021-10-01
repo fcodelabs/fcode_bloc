@@ -54,7 +54,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
         FirebaseFirestore.instance.collection(type);
   }
 
-  Stream<List<T>> _query2stream(FirebaseSpecificationI<T> spec, Query query) {
+  Stream<Iterable<T>> _query2stream(FirebaseSpecificationI<T> spec, Query query) {
     final q = query.withConverter(
       fromFirestore: fromSnapshot,
       toFirestore: toMap,
@@ -62,7 +62,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
     return spec.specify(q);
   }
 
-  Future<List<T>> _query2future(
+  Future<Iterable<T>> _query2future(
     FirebaseSpecificationI<T> spec,
     Query query,
   ) async {
@@ -94,8 +94,8 @@ abstract class FirebaseRepository<T extends DBModelI> {
     return ref;
   }
 
-  /// Same as [FirebaseRepository.add] but will store a [List] of given
-  /// [items] and return a [List] of [DocumentReference]s.
+  /// Same as [FirebaseRepository.add] but will store a [Iterable] of given
+  /// [items] and return a [Iterable] of [DocumentReference]s.
   Future<void> addList({
     required Iterable<T> items,
     required String type,
@@ -115,7 +115,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// document with [DocumentReference] [parent] according to the
   /// given rule in the [specification].
   ///
-  /// Will return a [Stream] of [List] with items. The stream will emmit
+  /// Will return a [Stream] of [Iterable] with items. The stream will emmit
   /// values each time specified documents in the Firestore get
   /// updated.
   ///
@@ -142,7 +142,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///   parent: null,
   /// );
   /// ```
-  Stream<List<T>> query({
+  Stream<Iterable<T>> query({
     required SpecificationI specification,
     required String type,
     DocumentReference? parent,
@@ -154,14 +154,14 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Usage is as same as in the [FirebaseRepository.query], but this is
   /// for collection group querying.
   ///
-  /// This function will return a [Stream] of [List]s with data from the
+  /// This function will return a [Stream] of [Iterable]s with data from the
   /// specified collection group.
   ///
   /// You can find more about the collection groups in the official
   /// firebase documentation.
   ///
   /// https://firebase.google.com/docs/firestore/query-data/queries#collection-group-query
-  Stream<List<T>> queryGroup({
+  Stream<Iterable<T>> queryGroup({
     required SpecificationI specification,
     required String collectionPath,
   }) {
@@ -176,7 +176,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// this will return a [Future] with the latest values in the Firestore.
   ///
   /// Usage is as same as the example in [FirebaseRepository.query]
-  Future<List<T>> querySingle({
+  Future<Iterable<T>> querySingle({
     required SpecificationI specification,
     required String type,
     DocumentReference? parent,
@@ -191,7 +191,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// Usage is as same as the example in [FirebaseRepository.query]
   /// and [FirebaseRepository.queryGroup]
-  Future<List<T>> queryGroupSingle({
+  Future<Iterable<T>> queryGroupSingle({
     required SpecificationI specification,
     required String collectionPath,
   }) async {

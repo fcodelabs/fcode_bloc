@@ -21,8 +21,12 @@ class RepositoryAddon<T extends DBModelI> {
     required DocumentReference ref,
   }) {
     return ref
+        .withConverter(
+          fromFirestore: _repo.fromSnapshot,
+          toFirestore: _repo.toMap,
+        )
         .snapshots()
-        .map<T?>(_repo.fromSnapshot)
+        .map<T?>((_) => _.data())
         .where((item) => item != null)
         .whereType<T>();
   }
@@ -50,8 +54,15 @@ class RepositoryAddon<T extends DBModelI> {
     required DocumentReference ref,
     Source source = Source.serverAndCache,
   }) async {
-    final snapshot = await ref.get(GetOptions(source: source));
-    return _repo.fromSnapshot(snapshot)!;
+    final snapshot = await ref
+        .withConverter(
+            fromFirestore: _repo.fromSnapshot, toFirestore: _repo.toMap)
+        .get(GetOptions(source: source));
+    final data = snapshot.data();
+    if (data == null) {
+      throw Exception("No document exists in the Ref: ${ref.path}");
+    }
+    return data;
   }
 
   /// Transform the given [refs] to a [List] of [T]s.

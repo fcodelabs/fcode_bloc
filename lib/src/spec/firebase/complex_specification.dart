@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../model/db_model_i.dart';
 import '../specification.dart';
 import 'firebase_specification.dart';
 
@@ -13,35 +14,37 @@ import 'firebase_specification.dart';
 /// query that can be generated using the [ComplexOperation]s. Query will be
 /// created according the order in the provided [List].
 /// {@endtemplate}
-class ComplexSpecification extends FirebaseSpecificationI {
-  final List<ComplexOperation> _complexWhere;
+class ComplexSpecification<T extends DBModelI>
+    extends FirebaseSpecificationI<T> {
+  final List<ComplexOperation<T>> _complexWhere;
 
   /// {@macro cmpRef}
   ComplexSpecification(this._complexWhere);
 
   @override
-  Stream<List<DocumentSnapshot>> specify(Query query) {
+  Stream<Iterable<T>> specify(Query<T> query) {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
     return query
         .snapshots(includeMetadataChanges: includeMetadataChanges)
-        .map<List<DocumentSnapshot>>((data) => data.docs);
+        .map((data) => data.docs.map((e) => e.data()));
   }
 
   @override
-  Future<List<DocumentSnapshot>> specifySingle(Query query) async {
+  Future<Iterable<T>> specifySingle(Query<T> query) async {
     for (final cw in _complexWhere) {
       query = cw.perform(query);
     }
-    return (await query.get(GetOptions(source: source))).docs;
+    return (await query.get(GetOptions(source: source)))
+        .docs
+        .map((e) => e.data());
   }
 }
 
 /// Provide a interface to generate compound queries inside a
 /// [ComplexSpecification].
-// ignore: one_member_abstracts
-abstract class ComplexOperation {
+mixin ComplexOperation<T extends DBModelI> {
   /// Perform the operation to the provided [query]. This operation
   /// will query data from the provided Firestore [query].
   ///
@@ -50,7 +53,7 @@ abstract class ComplexOperation {
   ///   given number.
   /// * [OrderBy] - Order the documents in the [query].
   /// * [ComplexWhere] - Use `where` to query data.
-  Query perform(Query query);
+  Query<T> perform(Query<T> query);
 }
 
 /// {@template limitOp}
@@ -58,14 +61,14 @@ abstract class ComplexOperation {
 ///
 /// Same as [Query.limit]. Look at firestore documentation for more.
 /// {@endtemplate}
-class Limit implements ComplexOperation {
+class Limit<T extends DBModelI> implements ComplexOperation<T> {
   final int _length;
 
   /// {@macro limitOp}
   Limit(this._length);
 
   @override
-  Query perform(Query query) {
+  Query<T> perform(Query<T> query) {
     return query.limit(_length);
   }
 }
@@ -77,7 +80,7 @@ class Limit implements ComplexOperation {
 ///
 /// Same as [Query.orderBy]. Look at firestore documentation for more.
 /// {@endtemplate}
-class OrderBy implements ComplexOperation {
+class OrderBy<T extends DBModelI> implements ComplexOperation<T> {
   final String _field;
 
   /// If [descending] is `true`, the documents will be ordered in
@@ -88,7 +91,7 @@ class OrderBy implements ComplexOperation {
   OrderBy(this._field, {this.descending = false});
 
   @override
-  Query perform(Query query) {
+  Query<T> perform(Query<T> query) {
     return query.orderBy(_field, descending: descending);
   }
 }
@@ -99,7 +102,7 @@ class OrderBy implements ComplexOperation {
 ///
 /// Same as [Query.where]. Look at firestore documentation for more.
 /// {@endtemplate}
-class ComplexWhere implements ComplexOperation {
+class ComplexWhere<T extends DBModelI> implements ComplexOperation<T> {
   final String _field;
 
   /// If provided, this will find documents where the provided field is equal
@@ -155,7 +158,7 @@ class ComplexWhere implements ComplexOperation {
   }
 
   @override
-  Query perform(Query query) {
+  Query<T> perform(Query<T> query) {
     return query.where(
       _field,
       isEqualTo: isEqualTo,

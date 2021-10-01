@@ -6,20 +6,20 @@ import '../specification.dart';
 /// To know how to use [FirebaseSpecificationI],
 /// look at [FirebaseRepository.query].
 ///
-/// Can be used to query a [List] of specific values from the Firestore.
+/// Can be used to query a [Iterable] of specific values from the Firestore.
 /// Implement [FirebaseSpecificationI.specify] and
 /// [FirebaseSpecificationI.specifySingle]
 /// according to the need of the query.
 abstract class FirebaseSpecificationI<T extends DBModelI>
     implements SpecificationI {
   /// Used by [FirebaseRepository.query] to get a [Stream] of
-  /// [List] of [DocumentReference]s according to the specified rule
+  /// [Iterable] of [DocumentReference]s according to the specified rule
   /// in the implementation.
-  Stream<List<T>> specify(Query<T> collection);
+  Stream<Iterable<T>> specify(Query<T> collection);
 
   /// Same as [FirebaseSpecificationI.specify] but this will return a [Future]
   /// so that it can be used by [FirebaseRepository.querySingle]
-  Future<List<T>> specifySingle(Query<T> collection);
+  Future<Iterable<T>> specifySingle(Query<T> collection);
 
   /// Firebase source type to be used in single fetch.
   /// See documentation on [Source] in Firestore.

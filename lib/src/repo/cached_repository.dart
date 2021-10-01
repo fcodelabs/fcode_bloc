@@ -31,7 +31,7 @@ class CachedRepository<T extends DBModelI> {
       : _addon = RepositoryAddon(repository: repository);
 
   /// Same as [FirebaseRepository.query] but with caching
-  Stream<List<T>> query({
+  Stream<Iterable<T>> query({
     required SpecificationI specification,
     required String type,
     DocumentReference? parent,
@@ -60,7 +60,7 @@ class CachedRepository<T extends DBModelI> {
   }) {
     return ConcatStream([
       Stream.fromFuture(_addon.tryFetch(ref: ref, source: Source.cache))
-          .handleError(() {})
+          .handleError((_) {})
           .whereType<T>(),
       _addon.transform(ref: ref),
     ]);
@@ -72,7 +72,7 @@ class CachedRepository<T extends DBModelI> {
   }) {
     return ConcatStream([
       Stream.fromFuture(_addon.multiFetch(refs: refs, source: Source.cache))
-          .handleError(() {}),
+          .handleError((_) {}),
       _addon.multiTransform(refs: refs),
     ]);
   }

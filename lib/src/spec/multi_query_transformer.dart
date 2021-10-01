@@ -11,7 +11,6 @@ import 'query_transformer.dart';
 /// and perform all the transformations to a given query.
 /// {@endtemplate}
 class MultiQueryTransformer<T extends DBModelI> implements QueryTransformer<T> {
-
   final List<QueryTransformer<T>> _qs;
 
   /// {@macro mqt}
@@ -24,5 +23,4 @@ class MultiQueryTransformer<T extends DBModelI> implements QueryTransformer<T> {
     }
     return q;
   }
-
 }

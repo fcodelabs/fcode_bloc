@@ -1,3 +1,8 @@
+### [0.7.0] - Oct 01, 2021
+
+* Update firebase dependencies
+* Breaking changes on how to query things
+
 ### [0.6.0] - March 09, 2021
 
 * Remove some deprecated APIs from this SDK

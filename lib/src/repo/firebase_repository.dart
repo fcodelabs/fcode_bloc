@@ -170,9 +170,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
     bool includeMetadataChanges = false,
   }) {
     return _query2stream(
-        FirebaseFirestore.instance.collectionGroup(collectionPath),
-        spec,
-        includeMetadataChanges,);
+      FirebaseFirestore.instance.collectionGroup(collectionPath),
+      spec,
+      includeMetadataChanges,
+    );
   }
 
   /// Same as [FirebaseRepository.query] but instead of returning a [Stream]

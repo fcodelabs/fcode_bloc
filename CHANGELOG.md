@@ -1,3 +1,8 @@
+### [0.7.1] - Oct 09, 2021
+
+* Remove unwanted generics from transformers
+* Ability to include meta data changes in the repository addon
+
 ### [0.7.0] - Oct 01, 2021
 
 * Update firebase dependencies

@@ -4,13 +4,13 @@ import 'package:rxdart/rxdart.dart';
 import '../model/db_model_i.dart';
 import 'firebase_repository.dart';
 
-/// {@template repo}
+/// {@template repoAd}
 /// Provide additional functionality to a [FirebaseRepository]
 /// {@endtemplate}
 class RepositoryAddon<T extends DBModelI> {
   final FirebaseRepository<T> _repo;
 
-  /// {@macro repo}
+  /// {@macro repoAd}
   RepositoryAddon({required FirebaseRepository<T> repository})
       : _repo = repository;
 

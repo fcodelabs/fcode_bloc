@@ -32,12 +32,10 @@ class CachedRepository<T extends DBModelI> {
   /// Same as [FirebaseRepository.query] but with caching
   Stream<Iterable<T>> query({
     required QueryTransformer<T> spec,
-    required String type,
     DocumentReference? parent,
   }) {
     final cache = repository.querySingle(
       spec: spec,
-      type: type,
       parent: parent,
       source: Source.cache,
     );
@@ -45,7 +43,6 @@ class CachedRepository<T extends DBModelI> {
       Stream.fromFuture(cache),
       repository.query(
         spec: spec,
-        type: type,
         parent: parent,
       )
     ]);

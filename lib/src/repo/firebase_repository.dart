@@ -19,6 +19,13 @@ typedef MapperCallback<T> = Map<String, dynamic> Function(T item);
 /// [FirebaseRepository.toMap] to work with the given type of [DBModel]
 /// {@endtemplate}
 abstract class FirebaseRepository<T extends DBModelI> {
+  /// Name of the collection or the sub collection that this repository
+  /// is accessing.
+  final String type;
+
+  /// {@macro repo}
+  FirebaseRepository(this.type);
+
   Future<bool> _checkConnectivity() async {
     try {
       final result = await InternetAddress.lookup('example.com');
@@ -48,7 +55,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
     SetOptions? options,
   );
 
-  _merge(String type, DocumentReference? parent) {
+  _merge(DocumentReference? parent) {
     return parent?.collection(type) ??
         FirebaseFirestore.instance.collection(type);
   }
@@ -84,11 +91,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
   Future<DocumentReference> add({
     required T item,
     SetOptions? setOptions,
-    required String type,
     DocumentReference? parent,
   }) async {
     final data = toMap(item, setOptions);
-    final ref = _merge(type, parent).doc(item.id);
+    final ref = _merge(parent).doc(item.id);
     if (await _checkConnectivity()) {
       await ref.set(data);
     } else {
@@ -101,13 +107,11 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// [items] and return a [Iterable] of [DocumentReference]s.
   Future<void> addList({
     required Iterable<T> items,
-    required String type,
     DocumentReference? parent,
   }) async {
     final futures = items.map(
       (item) => add(
         item: item,
-        type: type,
         parent: parent,
       ),
     );
@@ -127,9 +131,9 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// This code will query all the documents in the
   /// global collection `People` in Firestore.
   /// ```dart
+  /// peopleRepository = PeopleRepository('People');
   /// peopleRepository.query(
   ///   specification: ComplexSpecification([]),
-  ///   type: 'People',
   ///   parent: null,
   /// );
   /// ```
@@ -147,11 +151,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// ```
   Stream<Iterable<T>> query({
     required QueryTransformer<T> spec,
-    required String type,
     DocumentReference? parent,
     bool includeMetadataChanges = false,
   }) {
-    return _query2stream(_merge(type, parent), spec, includeMetadataChanges);
+    return _query2stream(_merge(parent), spec, includeMetadataChanges);
   }
 
   /// Usage is as same as in the [FirebaseRepository.query], but this is
@@ -182,11 +185,10 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Usage is as same as the example in [FirebaseRepository.query]
   Future<Iterable<T>> querySingle({
     required QueryTransformer<T> spec,
-    required String type,
     DocumentReference? parent,
     Source source = Source.serverAndCache,
   }) async {
-    return _query2future(_merge(type, parent), spec, source);
+    return _query2future(_merge(parent), spec, source);
   }
 
   /// Same as [FirebaseRepository.queryGroup] but instead of returning a
@@ -236,13 +238,12 @@ abstract class FirebaseRepository<T extends DBModelI> {
   Future<DocumentReference> update({
     required T item,
     SetOptions? setOptions,
-    required String type,
     DocumentReference? parent,
     MapperCallback<T>? mapper,
   }) async {
     final data = mapper?.call(item) ?? toMap(item, setOptions);
     if (item.ref == null) {
-      return await add(item: item, type: type, parent: parent);
+      return await add(item: item, parent: parent);
     }
     if (await _checkConnectivity()) {
       await item.ref!.update(data);

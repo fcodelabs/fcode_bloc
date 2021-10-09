@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -19,13 +21,14 @@ class RepositoryAddon<T extends DBModelI> {
   /// in the DB.
   Stream<T> transform({
     required DocumentReference ref,
+    bool includeMetadataChanges = false,
   }) {
     return ref
         .withConverter(
           fromFirestore: _repo.fromSnapshot,
           toFirestore: _repo.toMap,
         )
-        .snapshots()
+        .snapshots(includeMetadataChanges: includeMetadataChanges)
         .map<T?>((_) => _.data())
         .where((item) => item != null)
         .whereType<T>();
@@ -70,9 +73,13 @@ class RepositoryAddon<T extends DBModelI> {
   /// in the DB.
   Stream<List<T>> multiTransform({
     required Iterable<DocumentReference> refs,
+    bool includeMetadataChanges = false,
   }) {
     return CombineLatestStream.list(refs.map<Stream<T>>(
-      (ref) => transform(ref: ref),
+      (ref) => transform(
+        ref: ref,
+        includeMetadataChanges: includeMetadataChanges,
+      ),
     ));
   }
 

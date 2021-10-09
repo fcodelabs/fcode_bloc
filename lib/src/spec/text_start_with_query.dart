@@ -9,7 +9,7 @@ import 'query_transformer.dart';
 /// Use to query documents where the text in the given `field` starts
 /// with the given `containText`.
 /// {@endtemplate}
-class TextStartWithQuery<T> implements QueryTransformer<T> {
+class TextStartWithQuery implements QueryTransformer {
   final String _field;
   final String _containText;
 
@@ -18,7 +18,7 @@ class TextStartWithQuery<T> implements QueryTransformer<T> {
       : assert(_field.isNotEmpty);
 
   @override
-  Query<T> transform(Query<T> q) {
+  Query transform(Query q) {
     return q
         .orderBy(_field)
         .startAt([_containText]).endAt(['$_containText\uf8ff']);

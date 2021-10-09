@@ -10,14 +10,14 @@ import 'query_transformer.dart';
 ///
 /// Same as [Query.limit]. Look at firestore documentation for more.
 /// {@endtemplate}
-class Limit<T> implements QueryTransformer<T> {
+class Limit implements QueryTransformer {
   final int _length;
 
   /// {@macro limitOp}
   Limit(this._length);
 
   @override
-  Query<T> transform(Query<T> q) {
+  Query transform(Query q) {
     return q.limit(_length);
   }
 }
@@ -29,7 +29,7 @@ class Limit<T> implements QueryTransformer<T> {
 ///
 /// Same as [Query.orderBy]. Look at firestore documentation for more.
 /// {@endtemplate}
-class OrderBy<T> implements QueryTransformer<T> {
+class OrderBy implements QueryTransformer {
   final String _field;
 
   /// If [descending] is `true`, the documents will be ordered in
@@ -40,7 +40,7 @@ class OrderBy<T> implements QueryTransformer<T> {
   OrderBy(this._field, {this.descending = false});
 
   @override
-  Query<T> transform(Query<T> q) {
+  Query transform(Query q) {
     return q.orderBy(_field, descending: descending);
   }
 }
@@ -51,7 +51,7 @@ class OrderBy<T> implements QueryTransformer<T> {
 ///
 /// Same as [Query.where]. Look at firestore documentation for more.
 /// {@endtemplate}
-class ComplexWhere<T> implements QueryTransformer<T> {
+class ComplexWhere implements QueryTransformer {
   final Object _field;
 
   /// If provided, this will find documents where the provided field is equal
@@ -107,7 +107,7 @@ class ComplexWhere<T> implements QueryTransformer<T> {
   });
 
   @override
-  Query<T> transform(Query<T> q) {
+  Query transform(Query q) {
     return q.where(
       _field,
       isEqualTo: isEqualTo,

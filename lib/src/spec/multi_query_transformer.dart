@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../model/db_model_i.dart';
 import 'query_transformer.dart';
 
 /// {@template mqt}
@@ -10,14 +9,14 @@ import 'query_transformer.dart';
 /// This [QueryTransformer] will accept multiple [QueryTransformer] objects
 /// and perform all the transformations to a given query.
 /// {@endtemplate}
-class MultiQueryTransformer<T extends DBModelI> implements QueryTransformer<T> {
-  final List<QueryTransformer<T>> _qs;
+class MultiQueryTransformer implements QueryTransformer {
+  final List<QueryTransformer> _qs;
 
   /// {@macro mqt}
   MultiQueryTransformer(this._qs);
 
   @override
-  Query<T> transform(Query<T> q) {
+  Query transform(Query q) {
     for (final qt in _qs) {
       q = qt.transform(q);
     }

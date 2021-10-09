@@ -61,26 +61,24 @@ abstract class FirebaseRepository<T extends DBModelI> {
   }
 
   Stream<Iterable<T>> _query2stream(
-      Query query, QueryTransformer<T> qt, bool includeMetadataChanges) {
-    final q = query.withConverter(
-      fromFirestore: fromSnapshot,
-      toFirestore: toMap,
-    );
+      Query query, QueryTransformer qt, bool includeMetadataChanges) {
     return qt
-        .transform(q)
+        .transform(query)
+        .withConverter(fromFirestore: fromSnapshot, toFirestore: toMap)
         .snapshots(includeMetadataChanges: includeMetadataChanges)
         .map((data) => data.docs.map((e) => e.data()));
   }
 
   Future<Iterable<T>> _query2future(
-      Query query, QueryTransformer<T> qt, Source source) async {
-    final q = query.withConverter(
-      fromFirestore: fromSnapshot,
-      toFirestore: toMap,
-    );
-    return (await qt.transform(q).get(GetOptions(source: source)))
-        .docs
-        .map((e) => e.data());
+      Query query, QueryTransformer qt, Source source) async {
+    final q = await qt
+        .transform(query)
+        .withConverter(
+          fromFirestore: fromSnapshot,
+          toFirestore: toMap,
+        )
+        .get(GetOptions(source: source));
+    return q.docs.map((e) => e.data());
   }
 
   /// Given [item] will be added to the collection with name [type],
@@ -150,7 +148,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// );
   /// ```
   Stream<Iterable<T>> query({
-    required QueryTransformer<T> spec,
+    required QueryTransformer spec,
     DocumentReference? parent,
     bool includeMetadataChanges = false,
   }) {
@@ -168,7 +166,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// https://firebase.google.com/docs/firestore/query-data/queries#collection-group-query
   Stream<Iterable<T>> queryGroup({
-    required QueryTransformer<T> spec,
+    required QueryTransformer spec,
     required String collectionPath,
     bool includeMetadataChanges = false,
   }) {
@@ -184,7 +182,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   ///
   /// Usage is as same as the example in [FirebaseRepository.query]
   Future<Iterable<T>> querySingle({
-    required QueryTransformer<T> spec,
+    required QueryTransformer spec,
     DocumentReference? parent,
     Source source = Source.serverAndCache,
   }) async {
@@ -198,7 +196,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// Usage is as same as the example in [FirebaseRepository.query]
   /// and [FirebaseRepository.queryGroup]
   Future<Iterable<T>> queryGroupSingle({
-    required QueryTransformer<T> spec,
+    required QueryTransformer spec,
     required String collectionPath,
     Source source = Source.serverAndCache,
   }) async {

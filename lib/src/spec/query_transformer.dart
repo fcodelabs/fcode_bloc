@@ -8,8 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 ///
 /// To learn more on how to use this in an application,
 /// look at [FirebaseRepository.query].
-mixin QueryTransformer<T> {
+mixin QueryTransformer {
   /// Override this method to implement the way you want to transform the
   /// given [Query] [q].
-  Query<T> transform(Query<T> q);
+  Query transform(Query q);
 }

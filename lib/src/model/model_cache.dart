@@ -89,11 +89,11 @@ class ModelCache<T extends DBModelI> {
             "You can set settings for this type using ModelCacheSettings. "
             "Make sure to use the correct type when calling the setSettings "
             "function of that class.\n"
-            "Eg: ModelCacheSettings.setSettings(...) is not the correct way "
+            "Eg: ModelCache.setSettings(...) is not the correct way "
             "of adding settings.\n"
             "To add settings to type User "
             "(which extends DBModelI) you can use\n"
-            "Eg: ModelCacheSettings.setSettings<User>(...) \n\n"
+            "Eg: ModelCache.setSettings<User>(...) \n\n"
             "If the issue still persists, use our github to create a issue.\n"
             "https://github.com/fcodelabs/fcode_bloc/issues");
       }

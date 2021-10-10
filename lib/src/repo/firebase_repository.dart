@@ -26,7 +26,7 @@ abstract class FirebaseRepository<T extends DBModelI> {
   /// {@macro repo}
   FirebaseRepository(this.type);
 
-  Future<bool> _checkConnectivity() async {
+  static Future<bool> _checkConnectivity() async {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
